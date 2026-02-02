@@ -1,0 +1,175 @@
+\chapter{LITERATURE REVIEW}
+\label{ch:literature}
+
+\section{Deep Learning for Medical Image Analysis}
+
+Deep learning has revolutionized medical image analysis over the past decade, achieving radiologist-level performance across diverse tasks including disease classification, lesion detection, and anatomical segmentation. Unlike traditional computer-aided diagnosis (CAD) systems requiring manual feature engineering, deep neural networks automatically learn hierarchical representations directly from raw image data.
+
+\subsection{The Rise of Convolutional Neural Networks}
+
+Convolutional Neural Networks (CNNs) introduced by LeCun et al. pioneered the application of learnable filters to image processing. The breakthrough came with AlexNet \cite{krizhevsky2012imagenet}, which achieved dramatic performance improvements on ImageNet through deep architectures (8 layers), ReLU activations, and dropout regularization.
+
+Subsequent architectures addressed key challenges in training very deep networks:
+
+\textbf{VGG Networks} \cite{simonyan2015very}: Demonstrated that network depth is critical, achieving strong performance with 16-19 layers using small 3×3 convolutions stacked to capture larger receptive fields.
+
+\textbf{ResNet (Residual Networks)} \cite{he2016deep}: Introduced skip connections enabling training of networks exceeding 100 layers by addressing gradient vanishing. The residual block formulation:
+\begin{equation}
+\mathbf{y} = \mathcal{F}(\mathbf{x}, \{W_i\}) + \mathbf{x}
+\end{equation}
+allows gradients to flow directly through shortcut connections. ResNet-50 (23.6M parameters) achieved 3.6\% top-5 error on ImageNet, representing a landmark advance in deep learning.
+
+\rev{\textbf{EfficientNet} \cite{tan2019efficientnet}: Proposed compound scaling to systematically balance network depth, width, and resolution. Unlike prior approaches that scale only one dimension (e.g., making networks deeper), EfficientNet scales all three dimensions together using a fixed ratio determined through grid search. This balanced scaling allows EfficientNet-B2 (7.7M parameters) to achieve comparable accuracy to much larger models like ResNet-50 (23.6M parameters), demonstrating that architectural efficiency enables better feature quality per parameter.}
+
+\subsection{Vision Transformers: A Paradigm Shift}
+
+Vision Transformers (ViTs) \cite{dosovitskiy2021image} challenged the CNN dominance by applying self-attention mechanisms from natural language processing to images. Instead of convolutional inductive biases (locality, translation equivariance), ViTs process images as sequences of patches with pure attention:
+\begin{equation}
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+\end{equation}
+\rev{where $Q$ (query), $K$ (key), and $V$ (value) are learned linear projections of the input, and $d_k$ is the dimension of the key vectors used for scaling.}
+
+\textbf{Key architectural differences:}
+\begin{itemize}
+    \item \textbf{CNNs}: Strong locality bias, learn texture patterns through convolutional filters
+    \item \textbf{Transformers}: Global receptive field from layer 1, learn shape patterns through self-attention
+\end{itemize}
+
+\textbf{DeiT (Data-efficient Image Transformers)} \cite{touvron2021training}: Addressed ViT's massive data requirements (300M images for ImageNet pretraining) through knowledge distillation and improved training strategies. DeiT-Base (86M parameters) achieves competitive accuracy with only ImageNet-1K pretraining, making transformers practical for medical imaging applications.
+
+\subsection{Inductive Biases: Texture vs. Shape}
+
+Geirhos et al. \cite{geirhos2019imagenet} revealed fundamental differences in CNN and Transformer learning:
+\begin{itemize}
+    \item \textbf{CNNs}: Texture-biased—classify objects primarily based on local texture patterns
+    \item \textbf{Transformers}: Shape-biased—rely more on global shape and spatial relationships
+\end{itemize}
+
+For medical imaging, these biases have important implications: tumor detection may benefit from texture analysis (necrotic cores, edema patterns) or shape analysis (irregular boundaries, spatial relationships). The optimal choice depends on the specific diagnostic task.
+
+\section{Transfer Learning in Medical Imaging}
+
+Medical imaging faces a fundamental challenge: datasets are orders of magnitude smaller than natural image datasets (10²-10⁴ samples vs. ImageNet's 1.2M images). Transfer learning addresses this through pretraining on large-scale natural image datasets followed by fine-tuning on domain-specific medical data.
+
+\subsection{Why ImageNet Pretraining Works}
+
+Yosinski et al. \cite{yosinski2014transferable} demonstrated that early CNN layers learn general features (edges, textures, colors) transferable across domains, while later layers learn task-specific features. Tajbakhsh et al. \cite{tajbakhsh2016convolutional} confirmed this for medical imaging, showing ImageNet pretraining consistently outperforms training from scratch across chest X-ray, colonoscopy, and ultrasound tasks.
+
+\textbf{Critical insight:} Even though ImageNet contains cats, dogs, and cars (no MRI scans), the learned feature hierarchies (Gabor-like filters, blob detectors, part detectors) are sufficiently general to benefit medical image analysis.
+
+\subsection{Fine-tuning Strategies}
+
+Common approaches include:
+
+\begin{enumerate}
+    \item \textbf{Feature extraction}: Freeze pretrained backbone, train only classification head
+    \item \textbf{Full fine-tuning}: Update all parameters with small learning rates
+    \item \textbf{Two-stage training}: Initially freeze backbone (5 epochs), then unfreeze for full fine-tuning (15 epochs)
+\end{enumerate}
+
+This thesis employs two-stage training, which balances rapid task adaptation with preservation of pretrained features.
+
+\subsection{The Multi-Channel Challenge}
+
+Standard ImageNet models expect 3-channel RGB input, but medical imaging often uses different modalities (T1, T1ce, T2, FLAIR for brain MRI). Common approaches:
+
+\rev{Since ImageNet-pretrained models expect 3-channel RGB input, we select three MRI modalities (T1ce, T2, FLAIR) to match this format directly. This allows using pretrained weights without modification.}
+
+\section{Brain Tumor Detection and Segmentation}
+
+\subsection{BraTS Challenge Overview}
+
+The Brain Tumor Segmentation (BraTS) Challenge \cite{menze2015multimodal, bakas2018identifying} provides standardized datasets for glioblastoma research. BraTS 2021 included:
+\begin{itemize}
+    \item 1,251 patients with multi-modal MRI (T1, T1ce, T2, FLAIR)
+    \item Expert annotations for tumor sub-regions (enhancing tumor, edema, necrotic core)
+    \item Standardized preprocessing (skull stripping, registration, resampling)
+\end{itemize}
+
+\subsection{2D vs. 3D Approaches}
+
+\textbf{3D CNNs} (U-Net \cite{ronneberger2015u}, V-Net \cite{milletari2016v}): Process full volumes with 3D convolutions, capturing complete spatial context. \textit{Limitation:} High memory requirements, difficult to pretrain on natural images.
+
+\textbf{2D CNNs} (this thesis): Process individual axial slices with ImageNet-pretrained models. \textit{Advantage:} Leverage powerful pretrained features, lower computational requirements. \textit{Limitation:} Limited inter-slice context.
+
+Recent work shows 2D approaches with proper slice selection can achieve competitive performance while maintaining computational efficiency.
+
+\rev{\subsection{State-of-the-Art in Brain Tumor Analysis}}
+
+\rev{Recent deep learning approaches for brain tumor detection and classification have achieved strong results on benchmark datasets \cite{solanki2023brain}. Studies applying EfficientNet and ResNet architectures to brain tumor classification have reported accuracies exceeding 95\% on curated datasets, with transfer learning from ImageNet consistently improving performance over training from scratch. For the BraTS challenge specifically, top-performing segmentation methods typically use 3D U-Net variants, though 2D slice-based approaches remain relevant for classification tasks where computational efficiency is important.}
+
+\rev{Regarding explainability in brain tumor analysis, several studies have applied Grad-CAM and similar saliency methods to verify that models focus on clinically relevant regions rather than artifacts \cite{asiri2023enhancing, velden2022explainable}. Hossain et al. \cite{hossain2024vision} combined Vision Transformers with explainable AI techniques for brain tumor detection, demonstrating the potential of transformer architectures in medical imaging. These works highlight the growing importance of XAI in medical imaging, though systematic comparisons of explainability across different architectures (CNNs vs Transformers) remain limited---a gap this thesis addresses.}
+
+\section{Explainable AI (XAI) in Medical Imaging}
+
+\subsection{The Clinical Trust Barrier}
+
+The ``black-box'' nature of deep learning models presents a critical barrier to clinical adoption. Tonekaboni et al. \cite{tonekaboni2019clinicians} surveyed clinicians and found interpretability cited as essential for AI systems, with many preferring explainable models even at modest accuracy cost.
+
+Regulatory bodies increasingly require explainability: the FDA's proposed guidelines for AI/ML-based medical devices emphasize transparency and interpretability as key components of clinical validation.
+
+\subsection{Gradient-based Visualization Methods}
+
+\textbf{Class Activation Mapping (CAM)} \cite{zhou2016learning}: Projects class-specific weights onto final convolutional feature maps. \textit{Limitation:} Requires global average pooling architecture.
+
+\textbf{Grad-CAM} \cite{selvaraju2017grad}: Uses gradients to weight feature maps, applicable to any CNN architecture without modification. The heatmap for class $c$ is:
+\begin{equation}
+L^c_{\text{Grad-CAM}} = \text{ReLU}\left(\sum_k \alpha_k^c A^k\right)
+\end{equation}
+where $\alpha_k^c = \frac{1}{Z}\sum_i\sum_j \frac{\partial y^c}{\partial A^k_{ij}}$ are importance weights computed from gradients.
+
+\textbf{Grad-CAM++} \cite{chattopadhay2018grad}: Improved localization through pixel-wise weighting of gradients.
+
+Grad-CAM has become the de facto standard for CNN interpretation due to its simplicity, broad applicability, and intuitive spatial visualizations.
+
+\subsection{Validation of Explanations}
+
+Adebayo et al. \cite{adebayo2018sanity} highlighted that many saliency methods fail basic sanity checks:
+
+\begin{enumerate}
+    \item \textbf{Model parameter randomization}: Explanations should change when weights are randomized
+    \item \textbf{Data randomization}: Explanations should differ between real and random labels
+\end{enumerate}
+
+Grad-CAM passes both tests, confirming it reflects actual model reasoning rather than producing visually plausible but misleading visualizations.
+
+\subsection{Medical Imaging Applications}
+
+Successful Grad-CAM applications include:
+\begin{itemize}
+    \item \textbf{Chest X-ray}: Wang et al. \cite{wang2017chestxray} verified pneumonia detection models focus on lung regions
+    \item \textbf{Skin lesions}: Kawahara et al. \cite{kawahara2018seven} showed attention aligns with lesion boundaries
+    \item \textbf{Brain tumors}: Kim et al. \cite{kim2019brain} demonstrated tumor-focused attention for diagnosis
+\end{itemize}
+
+\section{Research Gap and Thesis Contributions}
+
+\subsection{Identified Gaps}
+
+Despite extensive work in medical deep learning, several gaps remain:
+
+\begin{enumerate}
+    \item \textbf{Architecture comparison}: Limited systematic comparison of CNNs (ResNet, EfficientNet) vs. Transformers (DeiT) under identical conditions for brain tumor detection
+    
+    \item \textbf{Accuracy vs. explainability}: Unclear whether higher-accuracy models provide better interpretability—most studies report only metrics, not qualitative visualization analysis
+    
+    \rev{\item \textbf{Limited architecture comparison}: Few studies systematically compare CNNs and Vision Transformers for brain tumor detection under identical conditions}
+    
+    \item \textbf{Explainability validation}: Many papers include Grad-CAM visualizations without quantitative validation or clinician assessment
+\end{enumerate}
+
+\subsection{This Thesis Addresses These Gaps By:}
+
+\begin{itemize}
+    \item \textbf{Systematic architecture comparison}: Evaluating ResNet-50, EfficientNet-B2, and DeiT-Base on identical data with identical training protocols
+    
+    \item \textbf{Quantitative + qualitative analysis}: Reporting both accuracy metrics and detailed qualitative assessment of Grad-CAM attention quality
+    
+    \rev{\item \textbf{Standard 3-channel approach}: Using three MRI modalities (T1ce, T2, FLAIR) matching ImageNet-pretrained model input format}
+    
+    \item \textbf{Comprehensive explainability}: Grad-CAM with percentile-based normalization for improved brain tissue visibility
+    
+    \item \textbf{Methodological rigor}: Patient-centric stratified splitting on full BraTS 2021 dataset (1,251 patients) to ensure robust generalization
+\end{itemize}
+
+The following chapter details the methodology used to address these research gaps.

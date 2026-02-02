@@ -1,0 +1,159 @@
+\documentclass[12pt,oneside]{report}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{letterpaper, left=1.5in, right=1in, top=1in, bottom=1in}
+\usepackage{setspace}
+\doublespacing
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage[table]{xcolor}
+\usepackage{caption}
+\usepackage{threeparttable}
+\usepackage{subcaption}
+\usepackage{float} % For strict figure placement
+
+% Define highlight command for revised text - using blue color for visibility
+\definecolor{revisioncolor}{RGB}{0, 0, 180}
+\newcommand{\rev}[1]{{\color{revisioncolor}#1}}  % Use \rev{text} to mark revisions in blue
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdftitle={Explainable Deep Learning for Brain Tumor Detection: A Comparative Study of CNNs and Vision Transformers with Grad-CAM Analysis},
+    pdfauthor={Saghar Bahrami},
+    pdfsubject={MSc Thesis in Computer Science},
+    pdfkeywords={Deep Learning, Medical Imaging, Explainable AI, Brain Tumor Detection, CNN, Vision Transformer, Grad-CAM}
+}
+
+% Graphics path
+\graphicspath{{./figures/}{../results/evaluation/}{../results/figures/}{../results/gradcam_batch/}}
+
+% Custom commands
+\newcommand{\gradcam}{Grad-CAM}
+
+\begin{document}
+
+% ============================================
+% TITLE PAGE
+% ============================================
+\begin{titlepage}
+    \centering
+    \vspace*{0.8cm}
+
+    {\Large\bfseries Explainable Deep Learning for Brain Tumor Detection: A Comparative Study of CNNs and Vision Transformers with Grad-CAM Analysis\par}
+    \vspace{1.2cm}
+
+    {\large A Thesis\par}
+    \vspace{0.3cm}
+    {\large Presented to\par}
+    {\large The Faculty of\par}
+    {\large California State University San Marcos\par}
+    \vspace{1.2cm}
+
+    {\large In Partial Fulfillment\par}
+    {\large of the Requirements for the Degree\par}
+    {\large Master of Science\par}
+    {\large in\par}
+    {\large Computer Science\par}
+    \vspace{1.2cm}
+
+    {\large by\par}
+    {\large\bfseries Saghar Bahrami\par}
+    \vspace{0.8cm}
+
+    {\large Spring 2026\par}
+\end{titlepage}
+
+% ============================================
+% SIGNATURE PAGE (Unsigned for draft)
+% ============================================
+\newpage
+\thispagestyle{empty}
+\begin{center}
+    {\Large\bfseries SIGNATURE PAGE}
+\end{center}
+
+\vspace{1cm}
+
+\noindent THESIS OF SAGHAR BAHRAMI
+
+\vspace{0.5cm}
+
+\noindent APPROVED:
+
+\vspace{2cm}
+
+\noindent\rule{3.5in}{0.4pt}\\
+Dr. Sreedevi Gutta, Chair\\
+Date
+
+\vspace{1.5cm}
+
+\noindent\rule{3.5in}{0.4pt}\\
+Dr. [Committee Member Name]\\
+Date
+
+\clearpage
+
+% ============================================
+% ABSTRACT
+% ============================================
+\input{chapters/abstract}
+
+% ============================================
+% ACKNOWLEDGMENTS
+% ============================================
+\input{chapters/acknowledgments}
+
+% ============================================
+% TABLE OF CONTENTS
+% ============================================
+\tableofcontents
+\clearpage
+
+% ============================================
+% LIST OF FIGURES
+% ============================================
+\listoffigures
+\clearpage
+
+% ============================================
+% LIST OF TABLES
+% ============================================
+\listoftables
+\clearpage
+
+% ============================================
+% MAIN CHAPTERS
+% ============================================
+\input{chapters/01_introduction}
+\input{chapters/02_literature_review}
+\input{chapters/03_methodology}
+\input{chapters/04_results}
+\input{chapters/05_discussion}
+\input{chapters/06_conclusion}
+
+% ============================================
+% REFERENCES
+% ============================================
+\bibliographystyle{ieeetr}
+\bibliography{references}
+
+% Appendix removed - no additional content needed
+
+\end{document}

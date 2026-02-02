@@ -1,0 +1,71 @@
+\chapter{DISCUSSION}
+\label{ch:discussion}
+
+\section{Introduction}
+
+This chapter interprets the experimental results presented in Chapter 4, focusing on three critical findings: (1) ResNet-50's quantitative superiority versus EfficientNet-B2's qualitative explainability advantage, (2) the fundamental differences between CNN and Transformer attention mechanisms, and (3) implications for clinical deployment when trust and interpretability are paramount.
+
+\section{The Accuracy-Explainability Trade-off}
+
+ResNet-50 achieved the highest test accuracy (94.69\%) and F1 score (93.72\%), marginally outperforming EfficientNet-B2 (93.67\% accuracy, 92.70\% F1). However, qualitative analysis of Grad-CAM visualizations revealed that \textit{higher accuracy does not guarantee better explainability}.
+
+EfficientNet-B2 consistently produced cleaner, more focused attention maps with sharper tumor boundaries. In contrast, ResNet-50's gradients exhibited noisier patterns with diffuse activation spreading beyond tumor regions. This observation aligns with EfficientNet's compound scaling design philosophy: by systematically balancing network depth, width, and resolution, EfficientNet learns more structured feature hierarchies that yield interpretable internal representations.
+
+From a clinical perspective, this trade-off is significant. A 1\% accuracy difference is negligible given typical confidence intervals, but a model whose attention aligns with radiologist expectations builds trust and enables error detection. If ResNet-50 achieves 95\% accuracy but its attention highlights irrelevant brain regions, clinicians cannot verify correctness or understand failure modes.
+
+\section{CNN vs. Transformer: Inductive Biases Matter}
+
+\rev{Inductive biases are the built-in assumptions an architecture makes about data structure, which guide what patterns it learns. CNNs assume local spatial correlations (nearby pixels are related), while Transformers assume that any part of the input can relate to any other part.}
+
+DeiT-Base (93.46\% accuracy) demonstrated comparable performance to both CNNs while exhibiting fundamentally different attention patterns. Vision Transformers lack the locality bias of CNNs, instead learning attention weights through pure self-attention mechanisms. This architectural difference manifests in Grad-CAM visualizations:
+
+\begin{itemize}
+    \item \textbf{CNNs (ResNet, EfficientNet)}: Exhibit texture-biased attention focusing on local intensity patterns and edges within tumor regions
+    \item \textbf{Transformers (DeiT)}: Show shape-biased attention distributed across tumor boundaries and global spatial relationships
+\end{itemize}
+
+Neither approach is universally superior---CNNs may better capture texture abnormalities (e.g., necrotic cores), while Transformers may excel at detecting irregular tumor shapes. The key insight is that architectural choice fundamentally determines \textit{what} the model learns and \textit{how} it reasons.
+
+\rev{\section{The 3-Channel Input Choice}}
+
+\rev{We selected three MRI modalities (T1ce, T2, FLAIR) to match the 3-channel input expected by ImageNet-pretrained models. This straightforward approach allows direct use of pretrained weights. The T1 (non-contrast) modality was excluded since T1ce provides similar anatomical information with additional contrast enhancement for tumor visualization.}
+
+\section{Clinical Translation: When to Choose Each Architecture}
+
+Based on our findings, we propose architecture selection guidelines for clinical deployment:
+
+\begin{itemize}
+    \item \textbf{ResNet-50}: Choose when maximizing accuracy is paramount and explainability is secondary (e.g., research benchmarking, ensemble components)
+    \item \textbf{EfficientNet-B2}: Choose for clinical deployment requiring interpretable predictions, parameter efficiency (7.7M), and balanced performance. The cleaner attention maps enhance clinician trust and enable verification of model reasoning
+    \item \textbf{DeiT-Base}: Choose when exploring alternative inductive biases or when global spatial relationships are diagnostically important
+\end{itemize}
+
+For the BraTS 2021 tumor detection task, we recommend EfficientNet-B2 as the optimal clinical candidate due to its superior explainability and competitive accuracy. In medical AI applications where decision-making carries strong risks, the transparency advantage outweighs marginal performance differences. This aligns with regulatory frameworks emphasizing transparency and ensuring patients have the right to understand the processes behind decisions influencing them.
+
+\subsection{Implications for Medical AI Development}
+
+This work demonstrates that architectural choice significantly impacts both quantitative performance and qualitative interpretability. The finding that EfficientNet-B2's compound scaling produces cleaner attention maps than ResNet-50 suggests that systematic architecture evaluation should include explainability assessment, not solely accuracy metrics. For clinical adoption, combining AI's powerful data processing capabilities with clinicians' expertise through transparent, interpretable models offers the most promising path forward.
+
+\section{Limitations and Future Directions}
+
+\subsection{Current Limitations}
+
+\begin{itemize}
+    \item \textbf{2D slice-level approach}: Does not utilize full 3D volumetric context, which may miss important spatial relationships across slices
+    \item \textbf{Single dataset generalizability}: Limited to BraTS 2021; the model may not adapt well to variations or new conditions outside its training domain. Understanding these limitations is crucial for establishing robustness standards before clinical deployment
+    \item \textbf{Modality constraints}: Excludes T1 (non-contrast) and diffusion-weighted imaging sequences that may provide complementary diagnostic information
+    \item \textbf{Grad-CAM limitations}: Provides coarse localization and primarily local explanations for specific inputs, failing to reflect the model's overall performance and reliability across diverse cases
+    \item \textbf{Radiologist validation}: No formal study comparing model attention patterns to expert annotations or radiologist decision-making processes
+    \item \textbf{XAI evaluation}: Lack of widely accepted quantitative metrics to systematically evaluate the quality of XAI explanations beyond qualitative human analysis
+\end{itemize}
+
+\subsection{Future Work}
+
+\begin{enumerate}
+    \item \textbf{3D architectures}: Extend to volumetric CNNs (3D ResNet, V-Net) and 3D Vision Transformers to leverage full spatial context
+    \item \textbf{Multi-site validation}: Test generalization on independent external datasets (TCGA-GBM, institutional data) using different scanners and imaging protocols to ensure model robustness
+    \item \textbf{Clinical study}: Conduct prospective study comparing model predictions with radiologist consensus, measuring impact on diagnostic accuracy and workflow efficiency
+    \item \textbf{Uncertainty quantification}: Implement Bayesian deep learning, Monte Carlo dropout, or ensemble methods for confidence estimation to enhance clinical trust
+    \item \textbf{Alternative XAI methods}: Compare Grad-CAM with advanced techniques such as Integrated Gradients, GradCAM++, LayerCAM, and SHAP to provide more comprehensive model understanding
+    \item \rev{\textbf{Quantitative XAI evaluation}: While this thesis relies on qualitative analysis of Grad-CAM visualizations, future work could develop objective metrics such as Intersection over Union (IoU) between heatmaps and tumor segmentation masks, or use perturbation-based methods (e.g., Remove and Debias) to systematically assess explanation reliability. Such quantitative evaluation was outside the scope of this work but represents a valuable direction for rigorous XAI assessment}
+    \item \textbf{Hybrid XAI approaches}: Combine multiple XAI methods to provide both local instance-level explanations and global model behavior understanding

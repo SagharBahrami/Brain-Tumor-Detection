@@ -1,0 +1,43 @@
+# Core dependencies for Brain Tumor Detection
+# Install with: uv pip install -r requirements.txt
+
+# Deep Learning
+torch>=2.0.0
+torchvision>=0.15.0
+timm>=0.9.0  # For EfficientNet and ViT models
+lightning>=2.0.0  # PyTorch Lightning (was pytorch-lightning)
+torchmetrics>=0.11.0
+
+# Medical Imaging
+nibabel>=5.0.0  # NIfTI file handling
+SimpleITK>=2.2.0  # Additional medical image processing
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+scikit-image>=0.21.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.14.0  # Interactive plots
+
+# Explainability
+grad-cam>=1.4.0  # Grad-CAM implementation
+lime>=0.2.0.1  # LIME explanations
+
+# Progress & Logging
+tqdm>=4.65.0
+tensorboard>=2.13.0  # Optional: for training visualization
+
+# Jupyter (for notebooks)
+jupyter>=1.0.0
+ipykernel>=6.23.0
+ipywidgets>=8.0.0
+
+# Utilities
+PyYAML>=6.0  # For config files
+python-dotenv>=1.0.0  # Environment variables
+jupyter
+pytest>=7.4.0

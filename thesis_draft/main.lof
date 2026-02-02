@@ -1,0 +1,12 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Model overview. We split an image into fixed-size patches, linearly embed each of them, add position embeddings, and feed the resulting sequence of vectors to a standard Transformer encoder. In order to perform classification, we use the standard approach of adding an extra learnable ``classification token'' to the sequence. The illustration of the Transformer encoder was inspired by Vaswani et al. (2017).}}{32}{figure.caption.6}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Training and validation curves showing loss and accuracy progression over 10 epochs for all three models. Note the rapid convergence and stable training dynamics.}}{41}{figure.caption.8}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Confusion matrices for slice-level tumor detection on test set (187 patients, $\sim $29,000 slices). All models show balanced performance with high accuracy and F1-scores, demonstrating effective tumor/non-tumor classification.}}{44}{figure.caption.10}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces EfficientNet-B2 Grad-CAM visualizations showing clean, tumor-focused attention patterns. Note the sharp boundaries and minimal background noise across diverse tumor morphologies.}}{47}{figure.caption.11}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces ResNet-50 Grad-CAM visualizations showing broader attention with more diffusion and background activation compared to EfficientNet-B2.}}{49}{figure.caption.12}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces DeiT-Base Grad-CAM visualizations showing transformer-style distributed attention with visible patch-based structure (16×16 patches).}}{51}{figure.caption.13}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

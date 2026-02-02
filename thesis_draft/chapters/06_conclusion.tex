@@ -1,0 +1,108 @@
+\chapter{CONCLUSION}
+\label{ch:conclusion}
+
+\section{Summary of Contributions}
+
+This thesis developed a rigorous deep learning approach for slice-level brain tumor detection from MRI scans with comprehensive explainability analysis. The key contributions include:
+
+\begin{enumerate}
+    \item \textbf{Scientific methodology}: Implemented patient-centric stratified splitting on the full BraTS 2021 dataset (1,251 patients: 877 training, 187 validation, 187 test) to ensure robust generalization estimates without data leakage.
+
+    \rev{\item \textbf{3-channel input}: Used T1ce, T2, and FLAIR modalities as input channels, matching the 3-channel format expected by ImageNet-pretrained models. T1 non-contrast was excluded as T1ce provides similar information with additional tumor contrast.}
+
+    \item \textbf{Architecture comparison}: Evaluated three state-of-the-art models---ResNet-50 (23.6M parameters), EfficientNet-B2 (7.7M parameters), DeiT-Base (86M parameters)---under identical training conditions with comprehensive metrics (accuracy, precision, recall, F1).
+
+    \item \textbf{Explainability insights}: Demonstrated that \textit{quantitative performance does not guarantee qualitative interpretability}. ResNet-50 achieved highest accuracy (94.69\%) but EfficientNet-B2 produced cleaner, more focused Grad-CAM visualizations suitable for clinical trust.
+
+    \item \textbf{CNN vs. Transformer analysis}: Revealed fundamental differences in learned representations---CNNs exhibit texture-biased attention while Transformers show shape-biased attention, with implications for clinical interpretation.
+
+    \item \rev{\textbf{Reproducible pipeline}: Open-source implementation with complete training scripts, evaluation code, and XAI visualization tools is available at: \url{https://github.com/sagharbahrami/brain-tumor-detection}}
+\end{enumerate}
+
+\section{Key Findings}
+
+The experimental results yielded several important findings:
+
+\begin{enumerate}
+    \item \textbf{Performance}: ResNet-50 achieved 94.69\% test accuracy (93.72\% F1), EfficientNet-B2 achieved 93.67\% accuracy (92.70\% F1), and DeiT-Base achieved 93.46\% accuracy (92.35\% F1). All three models demonstrate clinical viability for tumor detection.
+
+    \item \textbf{Explainability trade-off}: EfficientNet-B2's compound scaling architecture produces superior Grad-CAM visualizations compared to ResNet-50's noisier gradients, despite marginally lower accuracy. This 1.02\% accuracy difference is negligible compared to the interpretability gain.
+
+    \item \textbf{Architectural efficiency}: EfficientNet-B2 achieves comparable performance with 3× fewer parameters than ResNet-50 and 11× fewer than DeiT-Base, demonstrating that compound scaling optimizes both efficiency and feature quality.
+
+    \item \textbf{Inductive bias effects}: Vision Transformers (DeiT-Base) learn fundamentally different attention patterns than CNNs, with distributed spatial attention versus localized texture focus. Neither is universally superior---the choice depends on task requirements.
+
+    \item \textbf{Transfer learning validation}: All three models successfully leveraged ImageNet pretraining for brain MRI, confirming that natural image features transfer to medical imaging despite domain differences.
+
+    \item \textbf{Clinical recommendation}: For deployment requiring interpretable predictions, EfficientNet-B2 represents the optimal balance of accuracy, efficiency, and explainability.
+\end{enumerate}
+
+\section{Implications for Medical AI}
+
+This work provides several broader insights for medical AI research:
+
+\begin{enumerate}
+    \rev{\item \textbf{Input selection matters}: Choosing appropriate MRI modalities that match pretrained model input format simplifies implementation and ensures compatibility.}
+
+    \item \textbf{Explainability is not optional}: High accuracy alone is insufficient for clinical adoption. Models must provide interpretable reasoning that aligns with expert knowledge.
+
+    \item \textbf{Architecture choice is strategic}: Different architectures learn different representations. Understanding these differences enables principled model selection for specific clinical contexts.
+
+    \item \textbf{Evaluation rigor prevents overconfidence}: Patient-level splitting, external validation, and honest reporting of limitations are essential for responsible medical AI development.
+\end{enumerate}
+
+\section{Limitations and Future Work}
+
+\subsection{Current Limitations}
+
+This work has several limitations:
+
+\begin{itemize}
+    \item \textbf{2D approach}: Slice-level detection does not utilize full 3D volumetric context available in MRI scans
+
+    \item \textbf{Single dataset}: Results limited to BraTS 2021; no multi-site validation on external hospital data
+
+    \item \textbf{Modality constraints}: Excludes T1 (non-contrast) and diffusion-weighted imaging due to 3-channel RGB constraint
+
+    \item \textbf{Grad-CAM limitations}: Provides coarse spatial attention, not pixel-precise segmentation masks
+
+    \item \textbf{No clinical validation}: Lack of prospective study comparing model predictions with radiologist consensus
+
+    \item \textbf{Explainability}: Grad-CAM provides only coarse localization; no user study with radiologists to validate explanation utility.
+\end{itemize}
+
+\subsection{Future Research Directions}
+
+Future work should focus on the following areas:
+
+\begin{itemize}
+    \item \textbf{Training improvements}: Implement early stopping to reduce overfitting; systematic hyperparameter optimization for learning rate, dropout, and weight decay; stronger regularization techniques.
+
+    \item \textbf{Architecture enhancements}: Utilize 3D CNNs to capture volumetric information; integrate attention mechanisms or transformer architectures; explore multi-modal fusion strategies; apply multi-task learning with related tasks such as tumor segmentation or survival prediction.
+
+    \item \textbf{Data and training strategies}: Advanced augmentation techniques (Mixup, CutMix); ensemble methods combining multiple architectures; semi-supervised learning leveraging unlabeled BraTS data.
+
+    \item \textbf{Explainability}: Advanced visualization techniques such as Grad-CAM++ or Integrated Gradients; user studies with radiologists to validate explanation utility; counterfactual explanations for model decisions.
+
+    \item \textbf{Clinical translation}: External validation on independent datasets from different institutions; prospective clinical trials to assess real-world impact; uncertainty quantification using Bayesian methods; integration with hospital PACS systems and regulatory approval pathway.
+\end{itemize}
+
+\section{Broader Impact}
+
+This work contributes to medical AI by demonstrating that architectural choice significantly impacts both accuracy and interpretability. The finding that EfficientNet-B2's compound scaling produces cleaner attention maps than ResNet-50 despite marginally lower accuracy has implications beyond brain tumor detection—it suggests systematic architecture evaluation should include qualitative explainability assessment, not solely quantitative metrics.
+
+\rev{If further developed and validated, automated slice-level tumor detection could reduce radiologist workload, enable faster screening, and assist in early detection programs.}
+
+\section{Final Remarks}
+
+Deep learning has transformed medical image analysis, but clinical translation requires more than high accuracy---it demands interpretability, methodological rigor, and honest assessment of limitations. This thesis demonstrates that:
+
+\begin{itemize}
+    \item \textbf{Accuracy \neq Interpretability}: ResNet-50 achieves 94.69\% accuracy but EfficientNet-B2 (93.67\%) provides superior explainability for clinical trust
+    \item \textbf{Architecture matters}: Compound scaling (EfficientNet) produces cleaner features than standard residual connections (ResNet)
+    \rev{\item \textbf{Input choice matters}: Selecting MRI modalities that match pretrained model format (3 channels) simplifies transfer learning}
+    \item \textbf{Inductive biases are real}: CNNs learn texture, Transformers learn shape---neither is universally better
+\end{itemize}
+
+As medical AI continues to advance, the explainability framework developed here ensures that model predictions can be verified, trusted, and safely integrated into clinical workflows. This thesis represents a step toward AI-assisted radiology where automated systems augment---not replace---expert human judgment, with interpretable reasoning that enables collaborative decision-making between clinicians and algorithms.
+

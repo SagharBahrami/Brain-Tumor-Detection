@@ -1,0 +1,20 @@
+[
+	{
+		"name": "ResNet50",
+		"model": "resnet50",
+		"checkpoint": "results/models/20231109_120000/checkpoints/best.ckpt",
+		"dropout": 0.2
+	},
+	{
+		"name": "EfficientNet-B2",
+		"model": "efficientnet_b2",
+		"checkpoint": "results/models/20231109_130000/checkpoints/best.ckpt",
+		"dropout": 0.2
+	},
+	{
+		"name": "ViT-Small",
+		"model": "vit_small",
+		"checkpoint": "results/models/20231109_140000/checkpoints/best.ckpt",
+		"dropout": 0.1
+	}
+]

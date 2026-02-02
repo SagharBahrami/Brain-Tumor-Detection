@@ -1,0 +1,9 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Dataset distribution with patient-centric splitting (code-only, seed=42)}}{39}{table.caption.7}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Test set performance comparison on slice-level tumor detection}}{42}{table.caption.9}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Qualitative comparison of Grad-CAM attention patterns}}{52}{table.caption.14}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

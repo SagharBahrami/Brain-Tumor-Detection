@@ -1,0 +1,81 @@
+\begin{thebibliography}{10}
+
+\bibitem{stupp2005radiotherapy}
+R.~Stupp, W.~P. Mason, M.~J. Van Den~Bent, {\em et~al.}, ``Radiotherapy plus concomitant and adjuvant temozolomide for glioblastoma,'' {\em New England Journal of Medicine}, vol.~352, no.~10, pp.~987--996, 2005.
+
+\bibitem{selvaraju2017grad}
+R.~R. Selvaraju, M.~Cogswell, A.~Das, {\em et~al.}, ``Grad-cam: Visual explanations from deep networks via gradient-based localization,'' in {\em Proceedings of the IEEE International Conference on Computer Vision}, pp.~618--626, 2017.
+
+\bibitem{he2016deep}
+K.~He, X.~Zhang, S.~Ren, and J.~Sun, ``Deep residual learning for image recognition,'' in {\em Proceedings of the IEEE conference on computer vision and pattern recognition}, pp.~770--778, 2016.
+
+\bibitem{tan2019efficientnet}
+M.~Tan and Q.~Le, ``Efficientnet: Rethinking model scaling for convolutional neural networks,'' in {\em International conference on machine learning}, pp.~6105--6114, PMLR, 2019.
+
+\bibitem{dosovitskiy2021image}
+A.~Dosovitskiy, L.~Beyer, A.~Kolesnikov, D.~Weissenborn, X.~Zhai, T.~Unterthiner, M.~Dehghani, M.~Minderer, G.~Heigold, S.~Gelly, {\em et~al.}, ``An image is worth 16x16 words: Transformers for image recognition at scale,'' in {\em International Conference on Learning Representations}, 2021.
+
+\bibitem{tajbakhsh2016convolutional}
+N.~Tajbakhsh, J.~Y. Shin, S.~R. Gurudu, {\em et~al.}, ``Convolutional neural networks for medical image analysis: Full training or fine tuning?,'' {\em IEEE transactions on medical imaging}, vol.~35, no.~5, pp.~1299--1312, 2016.
+
+\bibitem{krizhevsky2012imagenet}
+A.~Krizhevsky, I.~Sutskever, and G.~E. Hinton, ``Imagenet classification with deep convolutional neural networks,'' in {\em Advances in Neural Information Processing Systems}, vol.~25, pp.~1097--1105, 2012.
+
+\bibitem{simonyan2015very}
+K.~Simonyan and A.~Zisserman, ``Very deep convolutional networks for large-scale image recognition,'' in {\em International Conference on Learning Representations}, 2015.
+
+\bibitem{touvron2021training}
+H.~Touvron, M.~Cord, M.~Douze, F.~Massa, A.~Sablayrolles, and H.~J{\'e}gou, ``Training data-efficient image transformers \& distillation through attention,'' in {\em International conference on machine learning}, pp.~10347--10357, PMLR, 2021.
+
+\bibitem{geirhos2019imagenet}
+R.~Geirhos, P.~Rubisch, C.~Michaelis, M.~Bethge, F.~A. Wichmann, and W.~Brendel, ``Imagenet-trained cnns are biased towards texture; increasing shape bias improves accuracy and robustness,'' in {\em International Conference on Learning Representations}, 2019.
+
+\bibitem{yosinski2014transferable}
+J.~Yosinski, J.~Clune, Y.~Bengio, and H.~Lipson, ``How transferable are features in deep neural networks?,'' in {\em Advances in neural information processing systems}, vol.~27, 2014.
+
+\bibitem{menze2015multimodal}
+B.~H. Menze, A.~Jakab, S.~Bauer, J.~Kalpathy-Cramer, K.~Farahani, J.~Kirby, Y.~Burren, N.~Porz, J.~Slotboom, R.~Wiest, {\em et~al.}, ``The multimodal brain tumor image segmentation benchmark (brats),'' {\em IEEE Transactions on Medical Imaging}, vol.~34, no.~10, pp.~1993--2024, 2015.
+
+\bibitem{bakas2018identifying}
+S.~Bakas, M.~Reyes, A.~Jakab, S.~Bauer, M.~Rempfler, A.~Crimi, R.~T. Shinohara, C.~Berger, S.~M. Ha, M.~Rozycki, {\em et~al.}, ``Identifying the best machine learning algorithms for brain tumor segmentation, progression assessment, and overall survival prediction in the brats challenge,'' {\em arXiv preprint arXiv:1811.02629}, 2018.
+
+\bibitem{ronneberger2015u}
+O.~Ronneberger, P.~Fischer, and T.~Brox, ``U-net: Convolutional networks for biomedical image segmentation,'' in {\em Medical Image Computing and Computer-Assisted Intervention--MICCAI 2015: 18th International Conference, Munich, Germany, October 5-9, 2015, Proceedings, Part III 18}, pp.~234--241, Springer, 2015.
+
+\bibitem{milletari2016v}
+F.~Milletari, N.~Navab, and S.-A. Ahmadi, ``V-net: Fully convolutional neural networks for volumetric medical image segmentation,'' in {\em 2016 fourth international conference on 3D vision (3DV)}, pp.~565--571, IEEE, 2016.
+
+\bibitem{solanki2023brain}
+S.~Solanki, U.~P. Singh, S.~S. Chouhan, and S.~Jain, ``Brain tumor detection and classification using intelligence techniques: An overview,'' {\em IEEE Access}, vol.~11, pp.~12870--12886, 2023.
+
+\bibitem{asiri2023enhancing}
+A.~A. Asiri, A.~Shaf, T.~Ali, {\em et~al.}, ``Enhancing brain tumor detection in {MRI} images through explainable {AI} using {Grad-CAM} with {ResNet50},'' {\em BMC Medical Imaging}, vol.~24, no.~1, p.~107, 2024.
+
+\bibitem{velden2022explainable}
+B.~H. Van~der Velden, H.~J. Kuijf, K.~G. Gilhuijs, and M.~A. Viergever, ``Explainable artificial intelligence ({XAI}) in deep learning-based medical image analysis,'' {\em Medical Image Analysis}, vol.~79, p.~102470, 2022.
+
+\bibitem{hossain2024vision}
+S.~Hossain, A.~Chakrabarty, T.~R. Gadekallu, M.~Alazab, and M.~J. Piran, ``Vision transformers, ensemble model, and transfer learning leveraging explainable {AI} for brain tumor detection and classification,'' {\em IEEE Journal of Biomedical and Health Informatics}, vol.~28, no.~3, pp.~1261--1272, 2024.
+
+\bibitem{tonekaboni2019clinicians}
+S.~Tonekaboni, S.~Joshi, M.~D. McCradden, and A.~Goldenberg, ``What clinicians want: contextualizing explainable machine learning for clinical end use,'' in {\em Proceedings of the 4th Machine Learning for Healthcare Conference}, vol.~106 of {\em Proceedings of Machine Learning Research}, pp.~359--380, PMLR, 2019.
+
+\bibitem{zhou2016learning}
+B.~Zhou, A.~Khosla, A.~Lapedriza, {\em et~al.}, ``Learning deep features for discriminative localization,'' in {\em Proceedings of the IEEE conference on computer vision and pattern recognition}, pp.~2921--2929, 2016.
+
+\bibitem{chattopadhay2018grad}
+A.~Chattopadhyay, A.~Sarkar, P.~Howlader, and V.~N. Balasubramanian, ``Grad-cam++: Generalized gradient-based visual explanations for deep convolutional networks,'' in {\em 2018 IEEE Winter Conference on Applications of Computer Vision (WACV)}, pp.~839--847, IEEE, 2018.
+
+\bibitem{adebayo2018sanity}
+J.~Adebayo, J.~Gilmer, M.~Muelly, I.~Goodfellow, M.~Hardt, and B.~Kim, ``Sanity checks for saliency maps,'' in {\em Advances in Neural Information Processing Systems}, vol.~31, pp.~9505--9515, 2018.
+
+\bibitem{wang2017chestxray}
+X.~Wang, Y.~Peng, L.~Lu, Z.~Lu, M.~Bagheri, and R.~M. Summers, ``Chestx-ray8: Hospital-scale chest x-ray database and benchmarks on weakly-supervised classification and localization of common thorax diseases,'' in {\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}, pp.~2097--2106, 2017.
+
+\bibitem{kawahara2018seven}
+J.~Kawahara, S.~Daneshvar, G.~Argenziano, and G.~Hamarneh, ``Seven-point checklist and skin lesion classification using multitask multimodal neural nets,'' {\em IEEE Journal of Biomedical and Health Informatics}, vol.~23, no.~2, pp.~538--546, 2018.
+
+\bibitem{kim2019brain}
+D.~W. Kim, H.~Y. Jang, K.~W. Kim, Y.~Shin, and S.~H. Park, ``Design characteristics of studies reporting the performance of artificial intelligence algorithms for diagnostic analysis of medical images: results from recently published papers,'' {\em Korean journal of radiology}, vol.~20, no.~3, p.~405, 2019.
+
+\end{thebibliography}

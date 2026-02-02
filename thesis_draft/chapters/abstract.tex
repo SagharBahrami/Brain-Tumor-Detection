@@ -1,0 +1,12 @@
+\chapter*{ABSTRACT}
+\addcontentsline{toc}{chapter}{ABSTRACT}
+
+\textbf{Background:} Automated brain tumor detection from MRI scans is critical for efficient screening and treatment planning. While deep learning models achieve high accuracy, their black-box nature limits clinical adoption. This thesis addresses two key questions: (1) How do CNN architectures (ResNet-50, EfficientNet-B2) compare to Vision Transformers (DeiT-Base) for slice-level tumor detection? (2) Which architecture provides superior explainability for clinical trust?
+
+\rev{\textbf{Methods:} We trained three architectures on the BraTS 2021 dataset (1,251 patients, 877 training / 187 validation / 187 test) using three MRI modalities (T1ce, T2, FLAIR) as input channels. Patient-level stratified splitting prevented data leakage. Training employed two-stage transfer learning (5 epochs frozen, 5 epochs fine-tuned) with evaluation metrics (accuracy, precision, recall, F1). Grad-CAM visualization provided interpretability.}
+
+\textbf{Results:} ResNet-50 achieved highest quantitative performance (94.69\% test accuracy, 93.72\% F1), followed by EfficientNet-B2 (93.67\% accuracy, 92.70\% F1) and DeiT-Base (93.46\% accuracy, 92.35\% F1). However, qualitative explainability analysis revealed EfficientNet-B2 produces cleaner, more focused attention maps compared to ResNet-50's noisier gradients and DeiT-Base's distributed attention patterns. Analysis of 9 representative samples across all three models showed EfficientNet's compound scaling architecture yields superior feature quality for clinical interpretation.
+
+\rev{\textbf{Conclusion:} While ResNet-50 achieves marginally higher accuracy, EfficientNet-B2 offers a good balance of performance (93.67\%) and explainability. Using three MRI modalities (T1ce, T2, FLAIR) as input channels matches the format expected by ImageNet-pretrained models. This work shows that architectural choice affects interpretability: EfficientNet produces cleaner attention maps than ResNet, while DeiT exhibits different attention patterns.}
+
+\textbf{Keywords:} Deep Learning, Medical Imaging, Brain Tumor Detection, Explainable AI, Grad-CAM, Transfer Learning, CNN vs Transformer, EfficientNet, ResNet, DeiT, MRI Classification

@@ -1,0 +1,128 @@
+\chapter{INTRODUCTION}
+\label{ch:introduction}
+
+\section{Background and Motivation}
+
+Brain tumors represent one of the most challenging diagnostic and therapeutic problems in modern medicine. Glioblastoma multiforme (GBM), the most aggressive primary brain cancer, has a median survival of only 12-15 months despite intensive treatment \cite{stupp2005radiotherapy}. Early detection and accurate characterization of brain tumors are critical for treatment planning, surgical guidance, and monitoring therapeutic response.
+
+Magnetic Resonance Imaging (MRI) serves as the primary diagnostic modality for brain tumors due to its superior soft tissue contrast and non-invasive nature. Modern clinical workflows require radiologists to manually review hundreds of 2D axial slices per patient to identify tumor presence, delineate boundaries, and assess characteristics. This process is:
+
+\begin{itemize}
+    \item \textbf{Time-intensive}: Requiring 20-30 minutes per case for expert review
+    \item \textbf{Subjective}: Inter-rater variability between radiologists can be substantial
+    \item \textbf{Prone to fatigue}: Large screening volumes increase risk of oversight
+    \item \textbf{Resource-limited}: Shortage of expert neuroradiologists in many regions
+    \item \textbf{Delayed treatment}: Bottlenecks in radiology workflows delay diagnosis
+\end{itemize}
+
+Automated deep learning systems for slice-level tumor detection could address these challenges by providing rapid, consistent preliminary screening, flagging suspicious cases for expert review, and reducing radiologist workload. \rev{Specifically, this thesis addresses \textbf{slice-level binary tumor detection}: classifying individual 2D MRI slices as either containing tumor tissue (positive) or being tumor-free (negative).} However, the clinical deployment of such systems faces a critical barrier: the \textit{black-box} nature of deep neural networks undermines trust and limits adoption in high-stakes medical settings. Since most deep models lack explainability, they are often treated as black boxes, making it difficult for clinicians to understand the underlying mechanisms behind predictions. In critical medical applications related to patient safety, fairness, and regulatory compliance, it is essential to provide human-intelligible explanations alongside accurate predictions \cite{selvaraju2017grad}.
+
+This thesis addresses two fundamental questions:
+
+\begin{enumerate}
+    \item \textbf{Architecture comparison}: How do traditional CNNs (ResNet-50, EfficientNet-B2) compare to modern Vision Transformers (DeiT-Base) for slice-level brain tumor detection?
+    \item \textbf{Explainability trade-offs}: Which architecture provides superior interpretability for building clinical trust?
+\end{enumerate}
+
+\section{The Role of Medical Imaging}
+
+Magnetic Resonance Imaging (MRI) is the primary imaging modality for brain tumor diagnosis, treatment planning, and monitoring. Modern MRI protocols typically include multiple sequences providing complementary information:
+
+\begin{itemize}
+    \item \textbf{T1-weighted with Contrast Enhancement (T1ce)}: Highlights blood-brain barrier disruption and active tumor regions with enhanced contrast uptake
+    \item \textbf{T2-weighted}: Shows edema, infiltration patterns, and overall tumor extent with high soft tissue contrast
+    \item \textbf{Fluid-Attenuated Inversion Recovery (FLAIR)}: Suppresses cerebrospinal fluid signal to better visualize perilesional edema and infiltrative tumor margins
+    \item \textbf{T1-weighted (non-contrast)}: Provides baseline anatomical reference without contrast agent
+\end{itemize}
+
+Each sequence captures different tissue properties, and radiologists synthesize information across all modalities to make diagnostic decisions. Deep learning models can similarly leverage multi-modal MRI to learn discriminative features for automated tumor detection.
+
+\section{Deep Learning for Medical Image Analysis}
+
+Deep learning, particularly convolutional neural networks (CNNs), has revolutionized computer vision and achieved remarkable success in medical image analysis. Unlike traditional approaches requiring manual feature engineering, deep learning models automatically learn hierarchical representations directly from raw image data. Recent architectures include:
+
+\begin{itemize}
+    \item \textbf{Residual Networks (ResNet)}: Introduced skip connections enabling training of very deep networks (50-200 layers) by addressing gradient vanishing problems \cite{he2016deep}
+    \item \textbf{EfficientNets}: Use compound scaling to systematically balance network depth, width, and resolution, achieving superior accuracy with fewer parameters \cite{tan2019efficientnet}
+    \item \textbf{Vision Transformers (ViT/DeiT)}: Apply self-attention mechanisms from NLP to images, learning global relationships without CNN's locality bias \cite{dosovitskiy2021image}
+\end{itemize}
+
+Transfer learning has emerged as a powerful technique to address limited medical imaging data. By leveraging models pretrained on large natural image datasets (ImageNet: 1.2M images, 1000 classes), researchers initialize networks with generalizable low-level features and fine-tune on smaller medical datasets. This approach has achieved state-of-the-art performance across disease classification, lesion detection, and segmentation tasks \cite{tajbakhsh2016convolutional}.
+
+\section{The Need for Explainability}
+
+While deep learning models achieve impressive predictive performance, their ``black-box'' nature poses significant challenges for clinical adoption. The application of deep learning in medical decision-making, which has traditionally relied on systems designed entirely by human experts, raises particular concerns due to its opaque nature. To address these concerns, explainable artificial intelligence (XAI) methodologies are increasingly explored to illustrate how deep learning algorithms reach their decisions \cite{selvaraju2017grad}.
+
+We distinguish three key concepts in the context of XAI: \textit{explainability} focuses on clarifying the internal workings of complex models; \textit{interpretability} pertains to the ease of understanding these models, particularly simpler architectures; and \textit{transparency} refers to the extent to which model operations can be comprehended by users. Medical practitioners require understanding of \textit{why} a model makes predictions to:
+
+\begin{enumerate}
+    \item \textbf{Build trust}: Clinicians must trust the model's reasoning before incorporating it into workflows, particularly when AI predictions influence treatment decisions
+    \item \textbf{Verify correctness}: Ensure the model uses medically relevant features, not spurious correlations (e.g., scanner artifacts, patient positioning)
+    \item \textbf{Detect errors}: Identify when and why the model fails to understand limitations and prevent misdiagnoses
+    \item \textbf{Regulatory compliance}: FDA approval of medical AI systems and frameworks like GDPR increasingly require explainability documentation and transparency
+    \item \textbf{Educational value}: Model attention patterns may reveal novel imaging biomarkers for radiologist consideration
+\end{enumerate}
+
+Gradient-weighted Class Activation Mapping (Grad-CAM) \cite{selvaraju2017grad} has become a widely adopted XAI technique for visualizing CNN decisions. By computing gradients of the predicted class with respect to final convolutional feature maps, Grad-CAM produces heatmaps highlighting image regions influencing the prediction. This approach is model-agnostic (works with any CNN architecture), provides intuitive spatial explanations, and has been successfully integrated into medical imaging to enhance model explainability.
+
+\section{Problem Statement and Research Questions}
+
+\rev{This thesis addresses the task of slice-level binary tumor detection on brain MRI scans: given a 2D axial slice, the model classifies it as tumor-present (positive) or tumor-free (negative). We compare CNN and Vision Transformer architectures and analyze their explainability using Grad-CAM visualizations.}
+
+\rev{The following research questions guide this work:}
+
+\begin{enumerate}
+    \item \rev{\textbf{RQ1 (Performance)}: How do CNN architectures (ResNet-50, EfficientNet-B2) compare to Vision Transformers (DeiT-Base) for slice-level binary tumor detection on BraTS 2021 data?}
+
+    \item \rev{\textbf{RQ2 (Explainability)}: Which architecture provides superior interpretability through Grad-CAM visualization? Does higher accuracy guarantee better explainability?}
+\end{enumerate}
+
+\section{Research Objectives}
+
+The primary objectives of this thesis are:
+
+\begin{enumerate}
+    \item \textbf{Develop rigorous evaluation pipeline} for slice-level tumor detection using patient-centric stratified splitting to prevent data leakage
+    
+    \item \rev{\textbf{Implement 3-channel RGB methodology} using standard input format (T1ce, T2, FLAIR) compatible with ImageNet-pretrained models}
+    
+    \item \textbf{Compare three architectures} under identical conditions: ResNet-50 (residual CNN), EfficientNet-B2 (compound scaling CNN), DeiT-Base (vision transformer)
+    
+    \item \textbf{Integrate comprehensive explainability} through Grad-CAM with percentile-based normalization for clinically interpretable visualizations
+    
+    \item \textbf{Analyze accuracy-explainability trade-offs} to inform architecture selection for clinical deployment scenarios
+    
+    \item \textbf{Release open-source implementation} with complete documentation for reproducibility
+\end{enumerate}
+
+\section{Contributions}
+
+This thesis makes the following contributions:
+
+\begin{enumerate}
+    \item \textbf{Scientific methodology}: Patient-centric evaluation on full BraTS 2021 dataset (1,251 patients) with rigorous train/val/test splitting
+    
+    \item \rev{\textbf{3-channel input}: Using T1ce, T2, and FLAIR modalities matching the 3-channel format of ImageNet-pretrained models}
+    
+    \item \textbf{Comprehensive architecture comparison}: ResNet-50, EfficientNet-B2, and DeiT-Base evaluated with identical training protocols and metrics
+    
+    \item \textbf{Explainability insights}: Demonstration that quantitative performance does not guarantee qualitative interpretability---EfficientNet-B2 produces cleaner visualizations than higher-accuracy ResNet-50
+    
+    \item \textbf{CNN vs. Transformer analysis}: Characterization of fundamental differences in learned attention patterns (texture bias vs. shape bias)
+    
+    \item \textbf{Clinical deployment guidance}: Architecture selection recommendations based on accuracy-explainability trade-offs
+    
+    \item \textbf{Reproducible pipeline}: Open-source implementation with training scripts, evaluation tools, and XAI visualization code
+\end{enumerate}
+
+\section{Thesis Organization}
+
+The remainder of this thesis is organized as follows:
+
+\begin{itemize}
+    \item \textbf{Chapter 2} reviews related work in brain tumor detection, CNN/Transformer architectures, and explainable AI techniques
+    \item \textbf{Chapter 3} details the methodology: dataset preparation, 3-channel RGB rationale, model architectures, training protocols, and Grad-CAM implementation
+    \item \textbf{Chapter 4} presents experimental results including training curves, test performance metrics, and qualitative Grad-CAM analysis
+    \item \textbf{Chapter 5} discusses accuracy-explainability trade-offs, CNN vs. Transformer differences, and clinical deployment considerations
+    \item \textbf{Chapter 6} concludes with summary of contributions, key findings, and future research directions
+\end{itemize}
