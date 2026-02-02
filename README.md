@@ -412,8 +412,8 @@ See `pyproject.toml` for full list.
 
 ## Author & License
 
-Author: [Your Name]
-License: MIT (or your preferred license)
+Author: Saghar Bahrami
+License: MIT
 
 ---
 
