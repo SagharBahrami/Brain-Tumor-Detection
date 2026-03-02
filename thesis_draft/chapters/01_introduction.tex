@@ -15,7 +15,7 @@ Magnetic Resonance Imaging (MRI) serves as the primary diagnostic modality for b
     \item \textbf{Delayed treatment}: Bottlenecks in radiology workflows delay diagnosis
 \end{itemize}
 
-Automated deep learning systems for slice-level tumor detection could address these challenges by providing rapid, consistent preliminary screening, flagging suspicious cases for expert review, and reducing radiologist workload. \rev{Specifically, this thesis addresses \textbf{slice-level binary tumor detection}: classifying individual 2D MRI slices as either containing tumor tissue (positive) or being tumor-free (negative).} However, the clinical deployment of such systems faces a critical barrier: the \textit{black-box} nature of deep neural networks undermines trust and limits adoption in high-stakes medical settings. Since most deep models lack explainability, they are often treated as black boxes, making it difficult for clinicians to understand the underlying mechanisms behind predictions. In critical medical applications related to patient safety, fairness, and regulatory compliance, it is essential to provide human-intelligible explanations alongside accurate predictions \cite{selvaraju2017grad}.
+Automated deep learning systems for slice-level tumor detection could address these challenges by providing rapid, consistent preliminary screening, flagging suspicious cases for expert review, and reducing radiologist workload. Specifically, this thesis addresses \textbf{slice-level binary tumor detection: classifying individual 2D MRI slices as either containing tumor tissue (positive) or being tumor-free (negative).} However, the clinical deployment of such systems faces a critical barrier: the \textit{black-box} nature of deep neural networks undermines trust and limits adoption in high-stakes medical settings. Since most deep models lack explainability, they are often treated as black boxes, making it difficult for clinicians to understand the underlying mechanisms behind predictions. In critical medical applications related to patient safety, fairness, and regulatory compliance, it is essential to provide human-intelligible explanations alongside accurate predictions \cite{selvaraju2017grad}.
 
 This thesis addresses two fundamental questions:
 
@@ -67,14 +67,14 @@ Gradient-weighted Class Activation Mapping (Grad-CAM) \cite{selvaraju2017grad} h
 
 \section{Problem Statement and Research Questions}
 
-\rev{This thesis addresses the task of slice-level binary tumor detection on brain MRI scans: given a 2D axial slice, the model classifies it as tumor-present (positive) or tumor-free (negative). We compare CNN and Vision Transformer architectures and analyze their explainability using Grad-CAM visualizations.}
+This thesis addresses the task of slice-level binary tumor detection on brain MRI scans: given a 2D axial slice, the model classifies it as tumor-present (positive) or tumor-free (negative). We compare CNN and Vision Transformer architectures and analyze their explainability using Grad-CAM visualizations.
 
-\rev{The following research questions guide this work:}
+The following research questions guide this work:
 
 \begin{enumerate}
-    \item \rev{\textbf{RQ1 (Performance)}: How do CNN architectures (ResNet-50, EfficientNet-B2) compare to Vision Transformers (DeiT-Base) for slice-level binary tumor detection on BraTS 2021 data?}
+    \item \textbf{RQ1 (Performance): How do CNN architectures (ResNet-50, EfficientNet-B2) compare to Vision Transformers (DeiT-Base) for slice-level binary tumor detection on BraTS 2021 data?}
 
-    \item \rev{\textbf{RQ2 (Explainability)}: Which architecture provides superior interpretability through Grad-CAM visualization? Does higher accuracy guarantee better explainability?}
+    \item \textbf{RQ2 (Explainability): Which architecture provides superior interpretability through Grad-CAM visualization? Does higher accuracy guarantee better explainability?}
 \end{enumerate}
 
 \section{Research Objectives}
@@ -82,9 +82,9 @@ Gradient-weighted Class Activation Mapping (Grad-CAM) \cite{selvaraju2017grad} h
 The primary objectives of this thesis are:
 
 \begin{enumerate}
-    \item \textbf{Develop rigorous evaluation pipeline} for slice-level tumor detection using patient-centric stratified splitting to prevent data leakage
+    \item \textbf{Develop rigorous evaluation pipeline} for slice-level tumor detection using patient-centric splitting to prevent data leakage
     
-    \item \rev{\textbf{Implement 3-channel RGB methodology} using standard input format (T1ce, T2, FLAIR) compatible with ImageNet-pretrained models}
+    \item \textbf{Implement 3-channel RGB methodology using standard input format (T1ce, T2, FLAIR) compatible with ImageNet-pretrained models}
     
     \item \textbf{Compare three architectures} under identical conditions: ResNet-50 (residual CNN), EfficientNet-B2 (compound scaling CNN), DeiT-Base (vision transformer)
     
@@ -102,7 +102,7 @@ This thesis makes the following contributions:
 \begin{enumerate}
     \item \textbf{Scientific methodology}: Patient-centric evaluation on full BraTS 2021 dataset (1,251 patients) with rigorous train/val/test splitting
     
-    \item \rev{\textbf{3-channel input}: Using T1ce, T2, and FLAIR modalities matching the 3-channel format of ImageNet-pretrained models}
+    \item \textbf{3-channel input}: Using T1ce, T2, and FLAIR modalities matching the 3-channel format of ImageNet-pretrained models
     
     \item \textbf{Comprehensive architecture comparison}: ResNet-50, EfficientNet-B2, and DeiT-Base evaluated with identical training protocols and metrics
     

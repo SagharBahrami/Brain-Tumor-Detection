@@ -15,7 +15,7 @@ From a clinical perspective, this trade-off is significant. A 1\% accuracy diffe
 
 \section{CNN vs. Transformer: Inductive Biases Matter}
 
-\rev{Inductive biases are the built-in assumptions an architecture makes about data structure, which guide what patterns it learns. CNNs assume local spatial correlations (nearby pixels are related), while Transformers assume that any part of the input can relate to any other part.}
+Inductive biases are the built-in assumptions an architecture makes about data structure, which guide what patterns it learns. CNNs assume local spatial correlations (nearby pixels are related), while Transformers assume that any part of the input can relate to any other part.
 
 DeiT-Base (93.46\% accuracy) demonstrated comparable performance to both CNNs while exhibiting fundamentally different attention patterns. Vision Transformers lack the locality bias of CNNs, instead learning attention weights through pure self-attention mechanisms. This architectural difference manifests in Grad-CAM visualizations:
 
@@ -26,9 +26,9 @@ DeiT-Base (93.46\% accuracy) demonstrated comparable performance to both CNNs wh
 
 Neither approach is universally superior---CNNs may better capture texture abnormalities (e.g., necrotic cores), while Transformers may excel at detecting irregular tumor shapes. The key insight is that architectural choice fundamentally determines \textit{what} the model learns and \textit{how} it reasons.
 
-\rev{\section{The 3-Channel Input Choice}}
+\section{The 3-Channel Input Choice}
 
-\rev{We selected three MRI modalities (T1ce, T2, FLAIR) to match the 3-channel input expected by ImageNet-pretrained models. This straightforward approach allows direct use of pretrained weights. The T1 (non-contrast) modality was excluded since T1ce provides similar anatomical information with additional contrast enhancement for tumor visualization.}
+We selected three MRI modalities (T1ce, T2, FLAIR) to match the 3-channel input expected by ImageNet-pretrained models. This straightforward approach allows direct use of pretrained weights. The T1 (non-contrast) modality was excluded since T1ce provides similar anatomical information with additional contrast enhancement for tumor visualization.
 
 \section{Clinical Translation: When to Choose Each Architecture}
 
@@ -67,5 +67,7 @@ This work demonstrates that architectural choice significantly impacts both quan
     \item \textbf{Clinical study}: Conduct prospective study comparing model predictions with radiologist consensus, measuring impact on diagnostic accuracy and workflow efficiency
     \item \textbf{Uncertainty quantification}: Implement Bayesian deep learning, Monte Carlo dropout, or ensemble methods for confidence estimation to enhance clinical trust
     \item \textbf{Alternative XAI methods}: Compare Grad-CAM with advanced techniques such as Integrated Gradients, GradCAM++, LayerCAM, and SHAP to provide more comprehensive model understanding
-    \item \rev{\textbf{Quantitative XAI evaluation}: While this thesis relies on qualitative analysis of Grad-CAM visualizations, future work could develop objective metrics such as Intersection over Union (IoU) between heatmaps and tumor segmentation masks, or use perturbation-based methods (e.g., Remove and Debias) to systematically assess explanation reliability. Such quantitative evaluation was outside the scope of this work but represents a valuable direction for rigorous XAI assessment}
+    \item \textbf{Quantitative XAI evaluation}: While this thesis relies on qualitative analysis of Grad-CAM visualizations, future work could develop objective metrics such as Intersection over Union (IoU) between heatmaps and tumor segmentation masks, or use perturbation-based methods (e.g., Remove and Debias) to systematically assess explanation reliability. Such quantitative evaluation was outside the scope of this work but represents a valuable direction for rigorous XAI assessment
     \item \textbf{Hybrid XAI approaches}: Combine multiple XAI methods to provide both local instance-level explanations and global model behavior understanding
+\end{enumerate}
+

@@ -6,9 +6,9 @@
 This thesis developed a rigorous deep learning approach for slice-level brain tumor detection from MRI scans with comprehensive explainability analysis. The key contributions include:
 
 \begin{enumerate}
-    \item \textbf{Scientific methodology}: Implemented patient-centric stratified splitting on the full BraTS 2021 dataset (1,251 patients: 877 training, 187 validation, 187 test) to ensure robust generalization estimates without data leakage.
+    \item \textbf{Scientific methodology}: Implemented patient-centric splitting on the full BraTS 2021 dataset (1,251 patients: 877 training, 187 validation, 187 test) to ensure robust generalization estimates without data leakage.
 
-    \rev{\item \textbf{3-channel input}: Used T1ce, T2, and FLAIR modalities as input channels, matching the 3-channel format expected by ImageNet-pretrained models. T1 non-contrast was excluded as T1ce provides similar information with additional tumor contrast.}
+    \item \textbf{3-channel input}: Used T1ce, T2, and FLAIR modalities as input channels, matching the 3-channel format expected by ImageNet-pretrained models. T1 non-contrast was excluded as T1ce provides similar information with additional tumor contrast.
 
     \item \textbf{Architecture comparison}: Evaluated three state-of-the-art models---ResNet-50 (23.6M parameters), EfficientNet-B2 (7.7M parameters), DeiT-Base (86M parameters)---under identical training conditions with comprehensive metrics (accuracy, precision, recall, F1).
 
@@ -16,7 +16,7 @@ This thesis developed a rigorous deep learning approach for slice-level brain tu
 
     \item \textbf{CNN vs. Transformer analysis}: Revealed fundamental differences in learned representations---CNNs exhibit texture-biased attention while Transformers show shape-biased attention, with implications for clinical interpretation.
 
-    \item \rev{\textbf{Reproducible pipeline}: Open-source implementation with complete training scripts, evaluation code, and XAI visualization tools is available at: \url{https://github.com/sagharbahrami/brain-tumor-detection}}
+    \item \textbf{Reproducible pipeline: Open-source implementation with complete training scripts, evaluation code, and XAI visualization tools is available at: \url{https://github.com/sagharbahrami/brain-tumor-detection}}
 \end{enumerate}
 
 \section{Key Findings}
@@ -42,7 +42,7 @@ The experimental results yielded several important findings:
 This work provides several broader insights for medical AI research:
 
 \begin{enumerate}
-    \rev{\item \textbf{Input selection matters}: Choosing appropriate MRI modalities that match pretrained model input format simplifies implementation and ensures compatibility.}
+    \item \textbf{Input selection matters: Choosing appropriate MRI modalities that match pretrained model input format simplifies implementation and ensures compatibility.}
 
     \item \textbf{Explainability is not optional}: High accuracy alone is insufficient for clinical adoption. Models must provide interpretable reasoning that aligns with expert knowledge.
 
@@ -91,16 +91,16 @@ Future work should focus on the following areas:
 
 This work contributes to medical AI by demonstrating that architectural choice significantly impacts both accuracy and interpretability. The finding that EfficientNet-B2's compound scaling produces cleaner attention maps than ResNet-50 despite marginally lower accuracy has implications beyond brain tumor detection—it suggests systematic architecture evaluation should include qualitative explainability assessment, not solely quantitative metrics.
 
-\rev{If further developed and validated, automated slice-level tumor detection could reduce radiologist workload, enable faster screening, and assist in early detection programs.}
+If further developed and validated, automated slice-level tumor detection could reduce radiologist workload, enable faster screening, and assist in early detection programs.
 
 \section{Final Remarks}
 
 Deep learning has transformed medical image analysis, but clinical translation requires more than high accuracy---it demands interpretability, methodological rigor, and honest assessment of limitations. This thesis demonstrates that:
 
 \begin{itemize}
-    \item \textbf{Accuracy \neq Interpretability}: ResNet-50 achieves 94.69\% accuracy but EfficientNet-B2 (93.67\%) provides superior explainability for clinical trust
+    \item \textbf{Accuracy $\neq$ Interpretability}: ResNet-50 achieves 94.69\% accuracy but EfficientNet-B2 (93.67\%) provides superior explainability for clinical trust
     \item \textbf{Architecture matters}: Compound scaling (EfficientNet) produces cleaner features than standard residual connections (ResNet)
-    \rev{\item \textbf{Input choice matters}: Selecting MRI modalities that match pretrained model format (3 channels) simplifies transfer learning}
+    \item \textbf{Input choice matters: Selecting MRI modalities that match pretrained model format (3 channels) simplifies transfer learning}
     \item \textbf{Inductive biases are real}: CNNs learn texture, Transformers learn shape---neither is universally better
 \end{itemize}
 

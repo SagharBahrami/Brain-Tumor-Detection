@@ -7,86 +7,90 @@ This chapter describes the methodology used to develop and evaluate deep learnin
 
 \section{Dataset}
 
-\subsection{BraTS 2021 Challenge Data}
+\rev{We use the BraTS 2021 Task 1 dataset containing 1,251 glioblastoma patients with multi-modal MRI sequences. Each patient scan includes four modalities: T1-weighted (T1), T1-weighted contrast-enhanced (T1ce), T2-weighted (T2), and Fluid Attenuated Inversion Recovery (FLAIR). All images are provided at 240×240×155 voxels with 1mm³ isotropic resolution, along with expert-annotated tumor segmentation masks.
 
-We use the BraTS 2021 Task 1 dataset containing 1,251 glioblastoma patients with multi-modal MRI sequences. Each patient scan includes four modalities: T1-weighted (T1), T1-weighted contrast-enhanced (T1ce), T2-weighted (T2), and Fluid Attenuated Inversion Recovery (FLAIR). All images are provided at 240×240×155 voxels with 1mm³ isotropic resolution, along with expert-annotated tumor segmentation masks.
+\textbf{Modality Selection:} We use three MRI modalities (T1ce, T2, FLAIR) as input channels, which directly matches the 3-channel input expected by ImageNet-pretrained models. This allows us to use standard pretrained weights without modification. The T1 (non-contrast) modality is excluded as T1ce provides similar anatomical information with additional contrast enhancement useful for tumor visualization.
 
-\subsection{Modality Selection Rationale}
+\textbf{Data Splitting:} We implement patient-level splitting with a fixed random seed (42) to ensure reproducibility and prevent data leakage. Patient-level splitting is critical---all slices from a single patient remain in the same split to ensure reliable generalization estimates and avoid pseudo-replication bias. Table \ref{tab:data_split} shows the distribution of patients and slices across splits.
 
-\rev{We use three MRI modalities (T1ce, T2, FLAIR) as input channels, which directly matches the 3-channel input expected by ImageNet-pretrained models. This allows us to use standard pretrained weights without modification. The T1 (non-contrast) modality is excluded as T1ce provides similar anatomical information with additional contrast enhancement useful for tumor visualization.}
+\begin{table}[htbp]
+\centering
+\caption{Dataset distribution with tumor/non-tumor slice counts}
+\label{tab:data_split}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Split} & \textbf{Patients} & \textbf{Total Slices} & \textbf{Tumor Slices} & \textbf{Non-Tumor Slices} \\
+\midrule
+Training & 877 (70\%) & 135,935 & 56,672 (41.69\%) & 79,263 (58.31\%) \\
+Validation & 187 (15\%) & 28,985 & 12,017 (41.46\%) & 16,968 (58.54\%) \\
+Test & 187 (15\%) & 28,985 & 12,748 (43.98\%) & 16,237 (56.02\%) \\
+\midrule
+\textbf{Total} & \textbf{1,251} & \textbf{193,905} & \textbf{81,437} & \textbf{112,468} \\
+\bottomrule
+\end{tabular}
+\end{table}}
 
-\subsection{Data Distribution and Splitting}
+\section{Data Preprocessing and Loading}
 
-We implement patient-level stratified splitting with a fixed random seed (42) to ensure reproducibility and prevent data leakage:
+\rev{Unlike previous work focused on MGMT methylation prediction or segmentation, our task is \textbf{slice-level binary tumor detection}: classifying individual 2D axial slices as either containing tumor tissue (positive) or tumor-free (negative). This formulation provides abundant training data ($\sim$155 slices × 1,251 patients $\approx$ 194,000 samples), enables direct comparison of CNN vs Transformer attention mechanisms, and facilitates explainability analysis through 2D heatmap visualization.
 
-\begin{itemize}
-    \item \textbf{Training set}: 877 patients (70\%)
-    \item \textbf{Validation set}: 187 patients (15\%)
-    \item \textbf{Test set}: 187 patients (15\%)
-\end{itemize}
+\textbf{Slice Labeling:} Ground truth labels are derived from expert-annotated segmentation masks. For each 2D axial slice, if any pixel in the corresponding segmentation mask has a non-zero value (indicating tumor tissue), the slice is labeled as positive (tumor present, label = 1). Otherwise, the slice is labeled as negative (tumor-free, label = 0).
 
-Patient-level splitting is critical - all slices from a single patient remain in the same split to ensure reliable generalization estimates and avoid pseudo-replication bias.
+\textbf{Patient-Centric Batch Loading:} To handle the large dataset efficiently while maintaining patient-level splits, we implement a patient-centric batching strategy where each training step loads all $\sim$155 slices from a single patient. This approach balances computational efficiency with the need to process all patient slices for comprehensive tumor detection evaluation.
 
-\section{Data Preprocessing and Patient-Centric Loading}
-
-\subsection{Slice-Level Binary Classification Task}
-
-Unlike previous work focused on MGMT methylation prediction or segmentation, our task is \textbf{slice-level binary tumor detection}: classifying individual 2D axial slices as either containing tumor tissue (positive) or tumor-free (negative). This formulation:
-
-\begin{itemize}
-    \item Provides abundant training data ($\sim$155 slices × 1,251 patients $\approx$ 194,000 samples)
-    \item Enables direct comparison of CNN vs Transformer attention mechanisms
-    \item Facilitates explainability analysis through 2D heatmap visualization
-\end{itemize}
-
-\subsection{Patient-Centric Batch Loading}
-
-To handle the large dataset efficiently while maintaining patient-level splits, we implement a \textbf{patient-centric batching strategy}:
-
-\begin{itemize}
-    \item \textbf{Batch size = 1 patient}: Each training step loads all $\sim$155 slices from a single patient
-    \item \textbf{Slice-level labels}: Ground truth derived from segmentation masks (slice with tumor $>$ 0 → label = 1, otherwise 0)
-    \item \textbf{Memory efficiency}: Only one patient's data resides in memory at a time
-\end{itemize}
-
-This approach balances computational efficiency with the need to process all patient slices for comprehensive tumor detection evaluation.
-
-\subsection{Slice Preprocessing Pipeline}
-
-Each 2D slice undergoes the following preprocessing:
-
-\begin{enumerate}
-    \item \textbf{Modality stacking}: Extract corresponding slices from T1ce, T2, and FLAIR volumes and stack into 3-channel image
-    \item \textbf{Z-score normalization}: Normalize each channel independently using foreground voxels: $x_{\text{norm}} = \frac{x - \mu}{\sigma + \epsilon}$
-    \item \textbf{Resizing}: Resize from 240×240 to 224×224 using bilinear interpolation for compatibility with pretrained models
-    \item \textbf{Tensor conversion}: Convert to PyTorch tensors with channel-first format (C×H×W)
-\end{enumerate}
-
-No data augmentation is applied during training to maintain consistent evaluation of model architectures.
+\textbf{Preprocessing Pipeline:} Each 2D slice undergoes: (1) modality stacking---extracting corresponding slices from T1ce, T2, and FLAIR volumes and stacking into a 3-channel image; (2) Z-score normalization per channel using foreground voxels: $x_{\text{norm}} = \frac{x - \mu}{\sigma + \epsilon}$; (3) resizing from 240×240 to 224×224 using bilinear interpolation; and (4) conversion to PyTorch tensors with channel-first format (C×H×W). No data augmentation is applied during training to maintain consistent evaluation of model architectures.}
 
 \section{Model Architectures}
 
-We compare three state-of-the-art architectures representing different design philosophies for image classification:
+\rev{We compare three state-of-the-art architectures representing different design philosophies for image classification. Each architecture was selected for its unique characteristics and significance in deep learning research:
+
+\subsection{ResNet-50: Deep Residual CNN}
+
+ResNet-50 (23.6M parameters) introduced skip connections that revolutionized deep learning by enabling training of very deep networks \cite{he2016deep}. \textbf{Significance:} ResNet's residual learning framework solved the degradation problem in deep networks, achieving state-of-the-art results on ImageNet and becoming the de facto baseline for medical imaging transfer learning.
+
+Architecture features:
+\begin{itemize}
+    \item \textbf{Backbone}: 50-layer CNN with residual blocks (conv1 + 4 stages of bottleneck blocks)
+    \item \textbf{Skip connections}: Identity mappings allowing gradients to flow directly through the network
+    \item \textbf{Pretrained weights}: ImageNet-1K (1.2M images, 1000 classes)
+    \item \textbf{Classification head}: Linear(2048 → 1) with sigmoid activation
+    \item \textbf{Target layer for Grad-CAM}: \texttt{layer4.2.conv3} (last convolutional layer)
+\end{itemize}
+
+\subsection{EfficientNet-B2: Compound-Scaled CNN}
+
+EfficientNet-B2 (7.7M parameters) uses compound scaling to systematically balance network depth, width, and resolution \cite{tan2019efficientnet}. \textbf{Significance:} EfficientNet demonstrated that balanced scaling outperforms single-dimension scaling, achieving higher accuracy with fewer parameters than ResNet-50, making it particularly valuable for resource-constrained medical imaging applications.
+
+Architecture features:
+\begin{itemize}
+    \item \textbf{Backbone}: Mobile inverted bottleneck convolution (MBConv) blocks with squeeze-and-excitation
+    \item \textbf{Compound scaling}: Depth × 1.1, width × 1.1, resolution × 1.2 relative to B0
+    \item \textbf{Pretrained weights}: ImageNet-1K with AutoML-discovered architecture
+    \item \textbf{Classification head}: Linear(1408 → 1) with sigmoid activation
+    \item \textbf{Target layer for Grad-CAM}: \texttt{features.8.0} (final MBConv block)
+\end{itemize}
 
 \subsection{DeiT-Base: Vision Transformer}
 
-DeiT-Base (Data-efficient Image Transformer, 86M parameters) represents the transformer architecture family. Architecture features:
+DeiT-Base (Data-efficient Image Transformer, 86M parameters) applies self-attention mechanisms from NLP to images \cite{touvron2021training}. \textbf{Significance:} DeiT proved that transformers can match CNN performance on ImageNet using only standard training data (without the 300M images required by original ViT), enabling exploration of fundamentally different attention mechanisms for medical imaging.
+
+Architecture features:
 \begin{itemize}
     \item \textbf{Backbone}: 12-layer transformer encoder with 12 attention heads
-    \item \textbf{Input}: 224×224×3 patches of 16×16 (196 patches total)
-    \item \textbf{Pretrained weights}: ImageNet-1K with distillation training
+    \item \textbf{Input}: 224×224×3 image split into 16×16 patches (196 patches total)
+    \item \textbf{Pretrained weights}: ImageNet-1K with knowledge distillation training
     \item \textbf{Classification head}: Linear(768 → 1) with sigmoid activation
     \item \textbf{Target layer for Grad-CAM}: \texttt{patch\_embed.proj} (patch embedding convolution)
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{architectures/vit_arch.png}
-\caption{Model overview. We split an image into fixed-size patches, linearly embed each of them, add position embeddings, and feed the resulting sequence of vectors to a standard Transformer encoder. In order to perform classification, we use the standard approach of adding an extra learnable ``classification token'' to the sequence. The illustration of the Transformer encoder was inspired by Vaswani et al. (2017).}
+\caption{Vision Transformer architecture. The image is split into fixed-size patches, linearly embedded with position encodings, and processed by a standard Transformer encoder. A learnable classification token aggregates information for the final prediction. Figure inspired by Dosovitskiy et al. (2021).}
 \label{fig:vit_arch}
 \end{figure}
 
-\rev{All models use standard 3-channel input (T1ce, T2, FLAIR), matching the input format of ImageNet-pretrained models.}
+All three models use standard 3-channel input (T1ce, T2, FLAIR), matching the input format of ImageNet-pretrained models.}
 
 \section{Training Protocol}
 
@@ -103,8 +107,8 @@ We employ a two-stage training strategy to leverage pretrained features effectiv
 \subsection{Optimization Configuration}
 
 \begin{itemize}
-    \item \textbf{Optimizer}: Adam with $\beta_1=0.9$, $\beta_2=0.999$
-    \item \textbf{Learning rate}: $10^{-3}$ (constant, no scheduling)
+    \item \textbf{Optimizer}: AdamW with $\beta_1=0.9$, $\beta_2=0.999$
+    \item \textbf{Learning rate}: Initial $10^{-3}$, decayed with Cosine Annealing schedule ($T_{\max}=10$ epochs, $\eta_{\min}=10^{-5}$)
     \item \textbf{Weight decay}: $10^{-4}$ (L2 regularization)
     \item \textbf{Loss function}: Binary Cross-Entropy with Logits (BCEWithLogitsLoss)
     \item \textbf{Batch size}: 1 patient ($\sim$155 slices per batch)
@@ -131,7 +135,7 @@ To comprehensively assess model performance on the slice-level tumor detection t
     \item \textbf{F1-Score}: Harmonic mean of precision and recall $= \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$
 \end{itemize}
 
-\rev{where Precision $= \frac{TP}{TP + FP}$ (proportion of positive predictions that are correct) and Recall $= \frac{TP}{TP + FN}$ (proportion of actual positives that are detected). TP, TN, FP, FN denote true positives, true negatives, false positives, and false negatives respectively.}
+where Precision $= \frac{TP}{TP + FP}$ (proportion of positive predictions that are correct) and Recall $= \frac{TP}{TP + FN}$ (proportion of actual positives that are detected). TP, TN, FP, FN denote true positives, true negatives, false positives, and false negatives respectively.
 
 F1-score is particularly important for imbalanced datasets, providing a balanced assessment of model performance across positive and negative classes.
 
@@ -176,7 +180,7 @@ where $\alpha_k^c = \frac{1}{HW} \sum_i \sum_j \frac{\partial y^c}{\partial A^k_
     \item Global average pooling of gradients to obtain importance weights
     \item Weighted sum of activation maps, followed by ReLU (removes negative activations)
     \item Bilinear upsampling to original input resolution (224×224)
-    \item Gaussian smoothing (σ=3) to reduce blockiness from low-resolution activations
+    \item Gaussian smoothing ($\sigma=3$) to reduce blockiness from low-resolution activations
 \end{enumerate}
 
 \subsection{Visualization Strategy}
@@ -207,7 +211,7 @@ From each model's test set predictions, we select high-quality visualizations us
     \item \textbf{Diverse patient coverage}: Select 2 slices from 20 different patients per model (40 samples total)
 \end{itemize}
 
-\rev{Note that this filtering applies only to visualization sample selection, not to model training. During training, the model learns from all tumor slices regardless of size to ensure robustness to varying tumor appearances. The filtering here ensures that Grad-CAM visualizations show clear, representative examples for qualitative analysis.}
+Note that this filtering applies only to visualization sample selection, not to model training. During training, the model learns from all tumor slices regardless of size to ensure robustness to varying tumor appearances. The filtering here ensures that Grad-CAM visualizations show clear, representative examples for qualitative analysis.
 
 This selection ensures that visualizations represent meaningful model behavior on substantial, well-defined tumor regions across diverse patient cases.
 

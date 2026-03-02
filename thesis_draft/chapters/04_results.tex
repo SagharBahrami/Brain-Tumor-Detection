@@ -77,20 +77,22 @@ Using checkpoints with best validation accuracy, we evaluate all three models on
 
 \subsection{Quantitative Metrics}
 
-\begin{table}[h]
+\rev{\begin{table}[h]
 \centering
-\caption{Test set performance comparison on slice-level tumor detection}
+\caption{Training and test performance comparison for generalization analysis}
 \label{tab:test_performance}
-\begin{tabular}{lccc}
+\begin{tabular}{lccccc}
 \toprule
-\textbf{Model} & \textbf{Test Accuracy} & \textbf{Test F1-Score} & \textbf{Test Loss} \\
+\textbf{Model} & \textbf{Train Acc.} & \textbf{Train F1} & \textbf{Test Acc.} & \textbf{Test F1} & \textbf{Gap} \\
 \midrule
-\textbf{ResNet-50} & \textbf{94.69\%} & \textbf{93.72\%} & \textbf{0.1495} \\
-EfficientNet-B2 & 93.67\% & 92.70\% & 0.1650 \\
-DeiT-Base & 93.46\% & 92.35\% & 0.1933 \\
+\textbf{ResNet-50} & 97.38\% & 96.39\% & \textbf{94.69\%} & \textbf{93.72\%} & 2.7\% \\
+EfficientNet-B2 & 98.53\% & 98.15\% & 93.67\% & 92.70\% & 4.9\% \\
+DeiT-Base & 96.20\% & 94.61\% & 93.46\% & 92.35\% & 2.7\% \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\textbf{Generalization Analysis:} The ``Gap'' column shows the difference between training and test accuracy. All models show modest gaps (2.7-4.9\%), indicating good generalization without severe overfitting. EfficientNet-B2 has the largest gap (4.9\%), suggesting it fits the training data more tightly, while ResNet-50 and DeiT-Base show smaller gaps (2.7\%), indicating more consistent train-test performance.}
 
 \textbf{Key findings:}
 
@@ -104,7 +106,7 @@ DeiT-Base & 93.46\% & 92.35\% & 0.1933 \\
 All three models achieve strong generalization ($>$93\% test accuracy), suggesting that:
 \begin{enumerate}
     \item The 3-channel standard RGB approach (T1ce, T2, FLAIR) provides sufficient information for slice-level tumor detection
-    \rev{\item ImageNet pretrained features transfer effectively to brain MRI}
+    \item ImageNet pretrained features transfer effectively to brain MRI
     \item Patient-level splitting successfully prevents data leakage and pseudo-replication bias
 \end{enumerate}
 
@@ -148,15 +150,14 @@ To understand where models focus attention during tumor detection, we generated 
 
 Visual inspection of Grad-CAM heatmaps reveals distinct differences in attention quality across architectures:
 
-\textbf{EfficientNet-B2: Cleanest and Most Focused Attention}
+\textbf{EfficientNet-B2: Broad CNN-Based Attention}
 
-EfficientNet-B2 consistently produces the cleanest and most tumor-focused heatmaps among all evaluated models. Figure \ref{fig:gradcam_efficientnet} shows representative examples demonstrating:
+EfficientNet-B2 produces heatmaps that cover the tumor region but also activate broadly over surrounding brain tissue. Figure \ref{fig:gradcam_efficientnet} shows representative examples demonstrating:
 
 \begin{itemize}
-    \item \textbf{Sharp, well-defined tumor boundaries}: Heatmaps closely follow tumor segmentation contours
-    \item \textbf{Minimal background activation}: Little to no attention on non-tumor regions
-    \item \textbf{Reduced artifacts}: Fewer spurious activations at image borders or in empty regions
-    \item \textbf{Consistent localization}: Attention remains stable across different tumor morphologies
+    \item \textbf{Broad activation area}: Heatmaps highlight the tumor region but often extend to neighboring non-tumor tissue
+    \item \textbf{Some background activation}: Portions of the brain beyond the tumor boundary receive noticeable attention
+    \item \textbf{Reasonable consistency}: Attention is generally centered around the tumor across different samples, though not tightly localized
 \end{itemize}
 
 \begin{figure}[H]
@@ -175,19 +176,19 @@ EfficientNet-B2 consistently produces the cleanest and most tumor-focused heatma
     \includegraphics[width=\textwidth]{figures/selected_gradcam/efficientnet_b2_sample3.png}
     \caption{EfficientNet-B2 - Sample 3 (BraTS2021\_00251, Slice 90)}
 \end{subfigure}
-\caption{EfficientNet-B2 Grad-CAM visualizations showing clean, tumor-focused attention patterns. Note the sharp boundaries and minimal background noise across diverse tumor morphologies.}
+\caption{EfficientNet-B2 Grad-CAM visualizations. Heatmaps cover the tumor region but also show activation in surrounding brain tissue, which is typical of CNN-based models that learn texture and contextual features.}
 \label{fig:gradcam_efficientnet}
 \end{figure}
 
 \textbf{ResNet-50: Broader Attention with More Diffusion}
 
-ResNet-50 produces functional but less refined heatmaps compared to EfficientNet-B2. Figure \ref{fig:gradcam_resnet} shows:
+ResNet-50 shows a similar broad attention pattern to EfficientNet-B2. Figure \ref{fig:gradcam_resnet} shows:
 
 \begin{itemize}
-    \item \textbf{Broader activation regions}: Attention spreads beyond tumor boundaries
-    \item \textbf{More background noise}: Increased activation in non-tumor brain tissue
-    \item \textbf{Occasional boundary artifacts}: Some attention at image corners/edges (residual from T1 removal)
-    \item \textbf{Variable consistency}: Quality varies more across different samples
+    \item \textbf{Broad activation regions}: Attention spreads beyond the tumor boundary into surrounding tissue
+    \item \textbf{Background activation}: Noticeable activation in non-tumor areas, sometimes covering a large portion of the brain
+    \item \textbf{Occasional artifacts}: Some activation at image corners or edges
+    \item \textbf{Variable consistency}: Heatmap quality varies more across samples compared to DeiT-Base
 \end{itemize}
 
 \begin{figure}[H]
@@ -206,19 +207,19 @@ ResNet-50 produces functional but less refined heatmaps compared to EfficientNet
     \includegraphics[width=\textwidth]{figures/selected_gradcam/resnet50_sample3.png}
     \caption{ResNet-50 - Sample 3 (BraTS2021\_00097, Slice 92)}
 \end{subfigure}
-\caption{ResNet-50 Grad-CAM visualizations showing broader attention with more diffusion and background activation compared to EfficientNet-B2.}
+\caption{ResNet-50 Grad-CAM visualizations. Similar to EfficientNet-B2, heatmaps cover the tumor but activate broadly over surrounding tissue, consistent with CNN texture and context-based feature learning.}
 \label{fig:gradcam_resnet}
 \end{figure}
 
-\textbf{DeiT-Base: Transformer-Style Distributed Attention}
+\textbf{DeiT-Base: Most Focused Tumor Localization}
 
-DeiT-Base as a pure transformer exhibits fundamentally different attention characteristics. Figure \ref{fig:gradcam_deit} reveals:
+DeiT-Base produces the most tightly focused heatmaps among all three models. Figure \ref{fig:gradcam_deit} reveals:
 
 \begin{itemize}
-    \item \textbf{Distributed attention}: Less localized, spreading across multiple regions
-    \item \textbf{Patch-based patterns}: Visible 16×16 patch structure from transformer architecture
-    \item \textbf{Global context integration}: Attention incorporates broader spatial relationships
-    \item \textbf{Less boundary-focused}: Reduced sensitivity to edges compared to CNNs
+    \item \textbf{Tight tumor localization}: Heatmaps concentrate on the tumor mass with little activation outside it
+    \item \textbf{Clear tumor boundaries}: The highlighted region closely matches the tumor area visible in the scan
+    \item \textbf{Minimal background activation}: Surrounding healthy brain tissue receives very little attention
+    \item \textbf{Self-attention advantage}: The transformer's multi-head self-attention mechanism processes all image patches simultaneously, allowing the model to compare every region against every other and learn precisely where to attend
 \end{itemize}
 
 \begin{figure}[H]
@@ -237,11 +238,44 @@ DeiT-Base as a pure transformer exhibits fundamentally different attention chara
     \includegraphics[width=\textwidth]{figures/selected_gradcam/deit_base_sample3.png}
     \caption{DeiT-Base - Sample 3 (BraTS2021\_00188, Slice 96)}
 \end{subfigure}
-\caption{DeiT-Base Grad-CAM visualizations showing transformer-style distributed attention with visible patch-based structure (16×16 patches).}
+\caption{DeiT-Base Grad-CAM visualizations. The multi-head self-attention mechanism allows the model to compare all image patches at once, resulting in heatmaps that are tightly focused on the tumor region with minimal activation elsewhere.}
 \label{fig:gradcam_deit}
 \end{figure}
 
-\rev{\textbf{Grad-CAM on Tumor-Free Slices:} For true negative predictions (correctly classified non-tumor slices), Grad-CAM produces diffuse, low-intensity activation distributed across the brain tissue without strong localization on any specific region. This is expected behavior---since no tumor features are present, the model does not concentrate attention on any particular area. This contrasts with tumor-positive slices where attention clearly concentrates on the tumor region, demonstrating that the models learn to identify actual tumor features rather than arbitrary patterns.}
+\rev{\textbf{Grad-CAM on Tumor-Free Slices:} For true negative predictions (correctly classified non-tumor slices), Grad-CAM produces diffuse, low-intensity activation distributed across the brain tissue without strong localization on any specific region. This is expected behavior---since no tumor features are present, the model does not concentrate attention on any particular area. Figure \ref{fig:gradcam_tn} illustrates this pattern.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/selected_gradcam/true_negative_example.png}
+\caption{Grad-CAM visualization on a true negative (tumor-free) slice. The heatmap shows diffuse, low-intensity activation without localized attention, contrasting with tumor-positive slices where attention concentrates on the tumor region.}
+\label{fig:gradcam_tn}
+\end{figure}
+
+This contrasts with tumor-positive slices where attention clearly concentrates on the tumor region, demonstrating that the models learn to identify actual tumor features rather than arbitrary patterns.}
+
+\rev{\subsection{Direct Model Comparison on Same Slice}
+
+To enable direct comparison of attention patterns, Figure \ref{fig:gradcam_comparison} shows Grad-CAM visualizations from all three models on the same slice (BraTS2021\_00247, Slice 71).
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{\textwidth}
+    \includegraphics[width=\textwidth]{figures/selected_gradcam/common_slice_efficientnet.png}
+    \caption{EfficientNet-B2 (BraTS2021\_00247, Slice 71)}
+\end{subfigure}
+\vspace{0.3cm}
+\begin{subfigure}[b]{\textwidth}
+    \includegraphics[width=\textwidth]{figures/selected_gradcam/common_slice_resnet.png}
+    \caption{ResNet-50 (BraTS2021\_00247, Slice 71)}
+\end{subfigure}
+\vspace{0.3cm}
+\begin{subfigure}[b]{\textwidth}
+    \includegraphics[width=\textwidth]{figures/selected_gradcam/common_slice_deit.png}
+    \caption{DeiT-Base (BraTS2021\_00247, Slice 71)}
+\end{subfigure}
+\caption{Direct comparison of Grad-CAM attention patterns on the same slice across all three models. This enables direct visual comparison of how each architecture localizes tumor features.}
+\label{fig:gradcam_comparison}
+\end{figure}}
 
 \subsection{Quantitative Analysis of Attention Quality}
 
@@ -255,12 +289,12 @@ While all models achieve similar test accuracy ($>$93\%), the explainability ana
 \toprule
 \textbf{Characteristic} & \textbf{EfficientNet-B2} & \textbf{ResNet-50} & \textbf{DeiT-Base} \\
 \midrule
-Attention Sharpness & \textbf{High} & Moderate & Low \\
-Tumor Boundary Precision & \textbf{Excellent} & Good & Fair \\
-Background Noise & \textbf{Minimal} & Moderate & Distributed \\
-Border Artifacts & \textbf{Rare} & Occasional & None \\
-Spatial Pattern & Localized & Localized & Distributed \\
-Consistency Across Samples & \textbf{High} & Moderate & Moderate \\
+Attention Sharpness & Moderate & Moderate & \textbf{High} \\
+Tumor Boundary Precision & Good & Good & \textbf{Excellent} \\
+Background Noise & Moderate & Moderate & \textbf{Minimal} \\
+Border Artifacts & Occasional & Occasional & \textbf{Rare} \\
+Spatial Pattern & Broad & Broad & \textbf{Focused} \\
+Consistency Across Samples & Moderate & Moderate & \textbf{High} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -268,20 +302,20 @@ Consistency Across Samples & \textbf{High} & Moderate & Moderate \\
 \textbf{Key Observations:}
 
 \begin{enumerate}
-    \item \textbf{EfficientNet-B2 produces superior explainability}: Despite not achieving the highest test accuracy (93.67\% vs. ResNet-50's 94.69\%), EfficientNet-B2 generates significantly cleaner and more interpretable attention maps. This suggests that EfficientNet-B2 learns more semantically meaningful tumor features rather than exploiting subtle artifacts.
+    \item \textbf{DeiT-Base produces the most focused and interpretable heatmaps}: Despite not achieving the highest test accuracy (93.46\%), DeiT-Base generates the most tightly localized attention maps, closely aligned with the tumor region. The CNN-based models (EfficientNet-B2 and ResNet-50) show similar broad activation patterns that extend into surrounding tissue, which is consistent with CNNs learning texture and contextual features rather than precise spatial boundaries.
     
-    \rev{\item \textbf{3-Channel input works well}: The 3-channel approach using T1ce, T2, and FLAIR modalities produces clean visualizations with models focusing on tumor regions.}
+    \item \textbf{3-Channel input works well: The 3-channel approach using T1ce, T2, and FLAIR modalities produces clean visualizations with models focusing on tumor regions.}
     
-    \item \textbf{CNN vs. Transformer attention differs fundamentally}:
+    \item \textbf{CNN vs. transformer attention differs fundamentally}:
     \begin{itemize}
-        \item \textbf{CNNs (EfficientNet-B2, ResNet-50)}: Produce localized, spatially-sharp heatmaps aligned with tumor boundaries
-        \item \textbf{Transformers (DeiT-Base)}: Generate distributed attention integrating global context, less boundary-focused
+        \item \textbf{CNNs (EfficientNet-B2, ResNet-50)}: Produce broad heatmaps that cover the tumor but also activate over surrounding tissue, suggesting these models rely on texture and contextual features in the surrounding region
+        \item \textbf{Transformer (DeiT-Base)}: Produces more focused attention tightly concentrated on the tumor mass, likely because multi-head self-attention compares all image patches simultaneously and learns to suppress non-tumor regions
     \end{itemize}
     
-    \item \textbf{Clinical interpretability ranking}: EfficientNet-B2 $>$ ResNet-50 $>$ DeiT-Base
+    \item \textbf{Clinical interpretability ranking}: DeiT-Base $>$ EfficientNet-B2 $\approx$ ResNet-50
     \begin{itemize}
-        \item Clinicians prefer sharp, tumor-aligned heatmaps for trust and verification
-        \item Distributed transformer attention may capture valid global patterns but appears less interpretable
+        \item DeiT-Base heatmaps are tightly focused on the tumor, making them easier for clinicians to verify
+        \item EfficientNet-B2 and ResNet-50 show comparable and broader activation patterns
     \end{itemize}
 \end{enumerate}
 
@@ -289,23 +323,27 @@ Consistency Across Samples & \textbf{High} & Moderate & Moderate \\
 
 The explainability analysis provides crucial insights beyond test accuracy:
 
-\textbf{For clinical deployment:}
+\textbf{For clinical deployment (interpretability-first):}
 \begin{itemize}
-    \item \textbf{EfficientNet-B2 recommended} despite slightly lower accuracy than ResNet-50
-    \item Superior explainability increases clinical trust and adoption
-    \item Cleaner attention patterns facilitate error analysis and model debugging
-    \item Reduced artifacts minimize risk of learning spurious correlations
+    \item \textbf{DeiT-Base recommended} when tumor localization clarity is the priority
+    \item Its heatmaps are tightly focused on the tumor region, making predictions easier to verify and trust
+    \item Suitable when a clinician or radiologist needs to understand exactly where the model is attending
 \end{itemize}
 
-\textbf{For research interpretation:}
+\textbf{For constrained deployment (efficiency-first):}
 \begin{itemize}
-    \item ResNet-50's higher accuracy (94.69\%) may rely partly on broader, noisier features
-    \item EfficientNet-B2's cleaner attention suggests it learns more robust, generalizable representations
-    \item Compound scaling (EfficientNet) may inherently produce more interpretable features than deep residual connections (ResNet)
+    \item \textbf{EfficientNet-B2 recommended} when computational resources or inference speed are limited
+    \item With only 7.7M parameters (compared to 86M for DeiT-Base), it is significantly lighter
+    \item It achieves competitive accuracy (93.67\%) with acceptable attention quality
+\end{itemize}
+
+\textbf{For high-accuracy requirements with abundant data:}
+\begin{itemize}
+    \item \textbf{ResNet-50} achieves the highest test accuracy (94.69\%) and may be preferred when training data is large and computational resources allow longer training
 \end{itemize}
 
 \textbf{Architectural insight:}
-The observation that EfficientNet-B2 (7.7M parameters, compound-scaled) produces cleaner attention than ResNet-50 (23.6M parameters, deep residual) suggests that \textbf{architectural efficiency and balanced scaling} contribute not only to computational efficiency but also to interpretability and feature quality.
+The CNN models (EfficientNet-B2 and ResNet-50) appear to classify based on texture and contextual features over a broad area, while DeiT-Base, through its self-attention mechanism, learns to attend precisely to the tumor region. This difference does not affect accuracy significantly but has a clear impact on interpretability.
 
 \section{Summary of Results}
 
@@ -321,9 +359,9 @@ This chapter presented comprehensive experimental results from training and eval
         \item \textbf{Transformer baseline}: DeiT-Base (93.46\%, 86M parameters)
     \end{itemize}
     
-    \item \textbf{Explainability reveals quality differences}: Grad-CAM analysis showed EfficientNet-B2 produces significantly cleaner, more tumor-focused attention despite slightly lower test accuracy
+    \item \textbf{Explainability reveals quality differences}: Grad-CAM analysis showed DeiT-Base produces the most focused attention, closely aligned with the tumor region. The CNN-based models show broader activation patterns consistent with texture and context-based feature learning
     
-    \rev{\item \textbf{3-Channel input}: Using T1ce (contrast-enhanced, highlights active tumor), T2 (shows edema), and FLAIR (suppresses fluid, shows tumor margins) as input channels achieved strong generalization. T1 non-contrast was excluded as T1ce provides similar anatomical information with additional tumor contrast.}
+    \item \textbf{3-Channel input: Using T1ce (contrast-enhanced, highlights active tumor), T2 (shows edema), and FLAIR (suppresses fluid, shows tumor margins) as input channels achieved strong generalization. T1 non-contrast was excluded as T1ce provides similar anatomical information with additional tumor contrast.}
     
     \item \textbf{CNN vs. Transformer insights}:
     \begin{itemize}
@@ -333,4 +371,4 @@ This chapter presented comprehensive experimental results from training and eval
     \end{itemize}
 \end{enumerate}
 
-\textbf{Recommended model for deployment:} \textbf{EfficientNet-B2} combines competitive accuracy (93.67\%), parameter efficiency (7.7M), and superior explainability, making it the optimal choice for clinical brain tumor detection systems requiring interpretable predictions.
+\textbf{Recommended models:} \textbf{DeiT-Base} is recommended when tumor localization interpretability is the priority, as its heatmaps are the most focused on the tumor region. \textbf{EfficientNet-B2} is recommended for efficiency-constrained settings, offering competitive accuracy with a much smaller model (7.7M parameters). \textbf{ResNet-50} achieves the highest accuracy and may be preferred with large datasets and sufficient compute resources.

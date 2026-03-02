@@ -12,7 +12,7 @@
 \usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage[capitalise]{cleveref}
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -23,22 +23,15 @@
 \usepackage{subcaption}
 \usepackage{float} % For strict figure placement
 
-% Define highlight command for revised text - using blue color for visibility
-\definecolor{revisioncolor}{RGB}{0, 0, 180}
-\newcommand{\rev}[1]{{\color{revisioncolor}#1}}  % Use \rev{text} to mark revisions in blue
+% ==================================================
+% REVISION COMMAND (DISABLED FOR FINAL)
+% ==================================================
+\newcommand{\rev}[1]{#1}
 
-% Hyperref setup
-\hypersetup{
-    colorlinks=true,
-    linkcolor=black,
-    filecolor=black,
-    citecolor=black,
-    urlcolor=blue,
-    pdftitle={Explainable Deep Learning for Brain Tumor Detection: A Comparative Study of CNNs and Vision Transformers with Grad-CAM Analysis},
-    pdfauthor={Saghar Bahrami},
-    pdfsubject={MSc Thesis in Computer Science},
-    pdfkeywords={Deep Learning, Medical Imaging, Explainable AI, Brain Tumor Detection, CNN, Vision Transformer, Grad-CAM}
-}
+% ==================================================
+% FORCE BLACK TEXT EVERYWHERE
+% ==================================================
+\AtBeginDocument{\color{black}}
 
 % Graphics path
 \graphicspath{{./figures/}{../results/evaluation/}{../results/figures/}{../results/gradcam_batch/}}
@@ -48,99 +41,88 @@
 
 \begin{document}
 
-% ============================================
+% ==================================================
 % TITLE PAGE
-% ============================================
+% ==================================================
 \begin{titlepage}
     \centering
-    \vspace*{0.8cm}
+    \setstretch{1.1}
 
-    {\Large\bfseries Explainable Deep Learning for Brain Tumor Detection: A Comparative Study of CNNs and Vision Transformers with Grad-CAM Analysis\par}
-    \vspace{1.2cm}
+    {\large CALIFORNIA STATE UNIVERSITY SAN MARCOS \par}
+    \vspace{0.5cm}
+    {\large {THESIS SIGNATURE PAGE} \par}
 
-    {\large A Thesis\par}
+    \vspace{0.5cm}
+
+    {THESIS SUBMITTED IN PARTIAL FULFILLMENT \\
+    OF THE REQUIREMENTS FOR THE DEGREE \par}
+
     \vspace{0.3cm}
-    {\large Presented to\par}
-    {\large The Faculty of\par}
-    {\large California State University San Marcos\par}
-    \vspace{1.2cm}
+    {\large {MASTER OF SCIENCE} \par}
+    \vspace{0.2cm}
+    {IN \par}
+    \vspace{0.2cm}
+    {\large COMPUTER SCIENCE \par}
 
-    {\large In Partial Fulfillment\par}
-    {\large of the Requirements for the Degree\par}
-    {\large Master of Science\par}
-    {\large in\par}
-    {\large Computer Science\par}
-    \vspace{1.2cm}
-
-    {\large by\par}
-    {\large\bfseries Saghar Bahrami\par}
     \vspace{0.8cm}
 
-    {\large Spring 2026\par}
+    \raggedright
+    \noindent {THESIS TITLE:} Explainable Deep Learning for Brain Tumor
+Detection: A Comparative Study of CNNs and
+Vision Transformers with Grad-CAM Analysis\par
+
+    \vspace{0.6cm}
+    \noindent {AUTHOR:} SAGHAR BAHRAMI \par
+
+    \vspace{0.4cm}
+    \noindent \textbf{DATE OF SUCCESSFUL DEFENSE: }02/27/2026 \par
+
+    \vspace{0.6cm}
+
+    \noindent THE THESIS HAS BEEN ACCEPTED BY THE THESIS COMMITTEE IN \\
+    PARTIAL FULFILLMENT OF THE REQUIREMENTS FOR THE DEGREE OF MASTER OF SCIENCE IN COMPUTER SCIENCE. \par
+
+    \vspace{1.2cm}
+
+    \noindent
+    \begin{tabular}{@{}p{0.50\textwidth} p{0.25\textwidth} p{0.15\textwidth}@{}}
+        DR. SREEDEVI GUTTA & & \\[-0.6ex]
+        \rule{0.9\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} \\[-1.2ex]
+        {\small THESIS COMMITTEE CHAIR} & {\small SIGNATURE} & {\small DATE}
+    \end{tabular}
+
+    \vspace{1.2cm}
+
+    \noindent
+    \begin{tabular}{@{}p{0.50\textwidth} p{0.25\textwidth} p{0.15\textwidth}@{}}
+        DR. AHMAD REZA HADAEGH & & \\[-0.6ex]
+        \rule{0.9\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} \\[-1.2ex]
+        {\small THESIS COMMITTEE MEMBER} & {\small SIGNATURE} & {\small DATE}
+    \end{tabular}
+
+    \vfill
+    \centering
+    1
 \end{titlepage}
 
-% ============================================
-% SIGNATURE PAGE (Unsigned for draft)
-% ============================================
-\newpage
-\thispagestyle{empty}
-\begin{center}
-    {\Large\bfseries SIGNATURE PAGE}
-\end{center}
-
-\vspace{1cm}
-
-\noindent THESIS OF SAGHAR BAHRAMI
-
-\vspace{0.5cm}
-
-\noindent APPROVED:
-
-\vspace{2cm}
-
-\noindent\rule{3.5in}{0.4pt}\\
-Dr. Sreedevi Gutta, Chair\\
-Date
-
-\vspace{1.5cm}
-
-\noindent\rule{3.5in}{0.4pt}\\
-Dr. [Committee Member Name]\\
-Date
-
-\clearpage
-
-% ============================================
-% ABSTRACT
-% ============================================
-\input{chapters/abstract}
-
-% ============================================
-% ACKNOWLEDGMENTS
-% ============================================
 \input{chapters/acknowledgments}
 
-% ============================================
-% TABLE OF CONTENTS
-% ============================================
 \tableofcontents
 \clearpage
 
-% ============================================
-% LIST OF FIGURES
-% ============================================
 \listoffigures
 \clearpage
 
-% ============================================
-% LIST OF TABLES
-% ============================================
 \listoftables
 \clearpage
 
-% ============================================
+% ==================================================
 % MAIN CHAPTERS
-% ============================================
+% ==================================================
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\input{chapters/abstract}
 \input{chapters/01_introduction}
 \input{chapters/02_literature_review}
 \input{chapters/03_methodology}
