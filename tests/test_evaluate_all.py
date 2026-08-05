@@ -51,6 +51,16 @@ def test_find_best_checkpoint_rejects_missing_model(tmp_path: Path) -> None:
         evaluate_all.find_best_checkpoint(tmp_path, "resnet50")
 
 
+def test_parse_args_accepts_smoke_test_patient_limit() -> None:
+    args = evaluate_all.parse_args(
+        ["--models", "resnet50", "--num-patients", "15", "--device", "cpu"]
+    )
+
+    assert args.models == ["resnet50"]
+    assert args.num_patients == 15
+    assert args.device == "cpu"
+
+
 def test_load_trained_model_removes_lightning_prefix(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
