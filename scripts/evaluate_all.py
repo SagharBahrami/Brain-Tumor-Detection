@@ -65,6 +65,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="Models to evaluate.",
     )
     parser.add_argument(
+        "--num-patients",
+        type=int,
+        default=None,
+        help=(
+            "Optionally limit patients for a quick smoke test. "
+            "Metrics from a limited run are not comparable with thesis results."
+        ),
+    )
+    parser.add_argument(
         "--seed",
         type=int,
         default=42,
@@ -181,6 +190,9 @@ def evaluate_model(
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+    if args.num_patients is not None and args.num_patients < 7:
+        raise ValueError("--num-patients must be at least 7 to create non-empty splits.")
+
     device = resolve_device(args.device)
     output_path = args.output or args.results_dir / "evaluation_results.csv"
 
@@ -190,11 +202,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"Device: {device}")
     print(f"Modalities: {', '.join(MODALITIES)}")
     print(f"Patient split seed: {args.seed}\n")
+    if args.num_patients is not None:
+        print(
+            f"SMOKE TEST: limiting input to {args.num_patients} patients. "
+            "Do not report these metrics as full-dataset results.\n"
+        )
 
     if not args.task1_dir.exists():
         raise FileNotFoundError(f"BraTS data directory not found: {args.task1_dir}")
 
-    patient_dirs = find_patient_dirs(args.task1_dir)
+    patient_dirs = find_patient_dirs(args.task1_dir, args.num_patients)
     if not patient_dirs:
         raise ValueError(f"No BraTS patient directories found in {args.task1_dir}")
 
